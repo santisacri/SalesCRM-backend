@@ -1,0 +1,17 @@
+import { TRegisterUser } from "../../auth/presentation/auth.schemas";
+import { IUserDatasource } from "../domain/user.datasource.contract";
+import { UserEntity } from "../domain/user.entity";
+import { IUserRepository } from "../domain/user.repository.contract";
+
+
+export class UserRepository implements IUserRepository {
+
+    constructor(
+        private readonly userDatasource: IUserDatasource
+    ) { }
+
+    create(data: TRegisterUser): Promise<UserEntity> {
+        return this.userDatasource.create(data)
+    }
+
+}
