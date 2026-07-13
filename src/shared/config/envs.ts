@@ -7,7 +7,8 @@ const envs = {
     DB_USER: env.get('DB_USER').required().asString(),
     DB_PASSWORD: env.get('DB_PASSWORD').required().asString(),
     DB_NAME: env.get('DB_NAME').required().asString(),
-    DATABASE_URL: env.get('DATABASE_URL').required().asUrlString()
+    DATABASE_URL: env.get('DATABASE_URL').required().asUrlString(),
+    JWT_SECRET: env.get('JWT_SECRET').required().asString()
 }
 
 export default envs
