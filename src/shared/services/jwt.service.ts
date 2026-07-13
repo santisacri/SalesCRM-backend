@@ -4,7 +4,7 @@ import z from "zod"
 import envs from "../config/envs"
 
 const jwtPayloadSchema = z.object({
-    sub: z.uuid(),
+    sub: z.uuid({ version: "v7" }),
     iat: z.number(),
     exp: z.number(),
     aud: z.string(),
