@@ -10,6 +10,11 @@ export class UserRepository implements IUserRepository {
         private readonly userDatasource: IUserDatasource
     ) { }
 
+
+    async getById(id: string): Promise<UserEntity> {
+        return this.userDatasource.getById(id)
+    }
+
     async findByEmail(email: string): Promise<UserEntity | null> {
         return this.userDatasource.findByEmail(email)
     }

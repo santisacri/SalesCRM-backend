@@ -12,6 +12,7 @@ export class UserDatasource implements IUserDatasource {
         private readonly prisma: PrismaClient
     ) { }
 
+
     async create(data: TRegisterUser): Promise<UserEntity> {
         try {
             const newUser = await this.prisma.user.create({
@@ -38,5 +39,16 @@ export class UserDatasource implements IUserDatasource {
         }
     }
 
+    async getById(id: string): Promise<UserEntity> {
+        try {
+            const user = await this.prisma.user.findUniqueOrThrow({
+                where: { id }
+            })
+
+            return UserEntity.fromObject(user)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
 
 }

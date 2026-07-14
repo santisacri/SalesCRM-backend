@@ -4,4 +4,5 @@ import { UserEntity } from "./user.entity";
 export interface IUserDatasource {
     create(data: TRegisterUser): Promise<UserEntity>
     findByEmail(email: string): Promise<UserEntity | null>
+    getById(id: string): Promise<UserEntity>
 }
