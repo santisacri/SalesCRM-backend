@@ -23,14 +23,41 @@ export class RefreshTokenDatasource implements IRefreshTokenDatasource {
             handlePrismaError(error)
         }
     }
-    findByToken(token: string): Promise<RefreshTokenEntity | null> {
-        throw new Error("Method not implemented.");
+
+    async findByToken(token: string): Promise<RefreshTokenEntity | null> {
+        try {
+            const refreshToken = await this.prisma.refreshToken.findUnique({
+                where: { token }
+            })
+
+            if (!refreshToken) return null
+
+            return RefreshTokenEntity.fromObject(refreshToken)
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-    revokeById(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async revokeById(id: string): Promise<void> {
+        try {
+            await this.prisma.refreshToken.update({
+                where: { id },
+                data: { revoked: true }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
-    revokeFamily(familyId: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    
+    async revokeFamily(family: string): Promise<void> {
+        try {
+            await this.prisma.refreshToken.updateMany({
+                where: { family },
+                data: { revoked: true }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
     }
 
 }

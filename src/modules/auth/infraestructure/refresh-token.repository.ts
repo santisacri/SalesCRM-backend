@@ -12,14 +12,14 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     async create(data: { token: string; userId: string; family: string; }): Promise<RefreshTokenEntity> {
         return this.refreshTokenDatasource.create(data)
     }
-    findByToken(token: string): Promise<RefreshTokenEntity | null> {
-        throw new Error("Method not implemented.");
+    async findByToken(token: string): Promise<RefreshTokenEntity | null> {
+        return this.refreshTokenDatasource.findByToken(token)
     }
-    revokeById(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async revokeById(id: string): Promise<void> {
+        return this.refreshTokenDatasource.revokeById(id)
     }
-    revokeFamily(familyId: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async revokeFamily(family: string): Promise<void> {
+        return this.refreshTokenDatasource.revokeFamily(family)
     }
 
 }
