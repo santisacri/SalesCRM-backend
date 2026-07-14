@@ -1,6 +1,6 @@
 import { CustomError } from "../../../shared/errors/custom-errors"
 
-interface IUserEntity {
+export interface IUserEntity {
     id: string
     name: string
     email: string
@@ -30,5 +30,10 @@ export class UserEntity {
         if (!updatedAt) throw CustomError.badRequest('updatedAt is missing')
 
         return new UserEntity(id, name, email, password, createdAt, updatedAt)
+    }
+
+    static toDto(user: UserEntity) {
+        const { password, ...rest } = user
+        return rest
     }
 }

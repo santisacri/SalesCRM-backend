@@ -34,4 +34,12 @@ export class RefreshTokenEntity {
 
         return new RefreshTokenEntity(id, token, family, expiresAt, createdAt, revoked, userId)
     }
+
+    isExpired(): boolean {
+        return this.expiresAt < new Date()
+    }
+
+    isValid(): boolean {
+        return !this.revoked && !this.isExpired()
+    }
 }

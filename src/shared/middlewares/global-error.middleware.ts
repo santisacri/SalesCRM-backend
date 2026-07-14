@@ -19,8 +19,10 @@ const errorMiddleware = (err: unknown, _req: Request, res: Response, _next: Next
         return
     }
 
+    console.log(err)
     console.log(`Unexpected Error: ${err}`)
     res.status(500).json({ message: 'Internal Server Error' })
+    return
 }
 
 export default errorMiddleware

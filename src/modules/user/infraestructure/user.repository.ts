@@ -10,7 +10,11 @@ export class UserRepository implements IUserRepository {
         private readonly userDatasource: IUserDatasource
     ) { }
 
-    create(data: TRegisterUser): Promise<UserEntity> {
+    async findByEmail(email: string): Promise<UserEntity | null> {
+        return this.userDatasource.findByEmail(email)
+    }
+
+    async create(data: TRegisterUser): Promise<UserEntity> {
         return this.userDatasource.create(data)
     }
 
