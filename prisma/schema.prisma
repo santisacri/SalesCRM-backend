@@ -13,13 +13,14 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid(7))
-  email         String         @unique
-  password      String
-  name          String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  refreshTokens RefreshToken[]
+  id                 String         @id @default(uuid(7))
+  email              String         @unique
+  password           String
+  name               String
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+  PasswordResetToken String?        @unique @map("password_reset_token")
+  refreshTokens      RefreshToken[]
 
   @@map("users")
 }
@@ -28,12 +29,12 @@ model RefreshToken {
   id        String   @id @default(uuid(7))
   token     String   @unique
   family    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
   revoked   Boolean  @default(false)
-  userId    String
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("refresh_tokens")
   @@index([family])
+  @@map("refresh_tokens")
 }
