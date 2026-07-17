@@ -29,3 +29,9 @@ export const loginUserSchema = z.object({
 })
 
 export type TLoginUser = z.infer<typeof loginUserSchema>
+
+export const forgotPasswordSchema = z.object({
+    email: z.email()
+})
+
+export type TForgotPassword = z.infer<typeof forgotPasswordSchema>

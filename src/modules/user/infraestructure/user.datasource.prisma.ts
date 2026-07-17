@@ -13,6 +13,7 @@ export class UserDatasource implements IUserDatasource {
     ) { }
 
 
+
     async create(data: TRegisterUser): Promise<UserEntity> {
         try {
             const newUser = await this.prisma.user.create({
@@ -46,6 +47,17 @@ export class UserDatasource implements IUserDatasource {
             })
 
             return UserEntity.fromObject(user)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async setPasswordResetToken(token: string, userId: string): Promise<void> {
+        try {
+            await this.prisma.user.update({
+                where: { id: userId },
+                data: { PasswordResetToken: token }
+            })
         } catch (error) {
             handlePrismaError(error)
         }
