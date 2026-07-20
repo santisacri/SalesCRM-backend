@@ -21,5 +21,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     async revokeFamily(family: string): Promise<void> {
         return this.refreshTokenDatasource.revokeFamily(family)
     }
-
+    async revokeByUserId(userId: string): Promise<void> {
+        return this.refreshTokenDatasource.revokeByUserId(userId)
+    }
 }

@@ -48,11 +48,22 @@ export class RefreshTokenDatasource implements IRefreshTokenDatasource {
             handlePrismaError(error)
         }
     }
-    
+
     async revokeFamily(family: string): Promise<void> {
         try {
             await this.prisma.refreshToken.updateMany({
                 where: { family },
+                data: { revoked: true }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async revokeByUserId(userId: string): Promise<void> {
+        try {
+            await this.prisma.refreshToken.updateMany({
+                where: { userId, revoked: false },
                 data: { revoked: true }
             })
         } catch (error) {

@@ -5,4 +5,5 @@ export interface IRefreshTokenDatasource {
     findByToken(token: string): Promise<RefreshTokenEntity | null>
     revokeById(id: string): Promise<void>
     revokeFamily(family: string): Promise<void>
+    revokeByUserId(userId: string): Promise<void>
 }
