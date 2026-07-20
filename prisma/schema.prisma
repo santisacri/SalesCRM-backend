@@ -19,8 +19,8 @@ model User {
   name                 String
   createdAt            DateTime       @default(now()) @map("created_at")
   updatedAt            DateTime       @updatedAt @map("updated_at")
-  PasswordResetToken   String?        @unique @map("password_reset_token")
-  PasswordResetExpires DateTime?      @map("password_reset_expires")
+  passwordResetToken   String?        @unique @map("password_reset_token")
+  passwordResetExpires DateTime?      @map("password_reset_expires")
   refreshTokens        RefreshToken[]
 
   @@map("users")
