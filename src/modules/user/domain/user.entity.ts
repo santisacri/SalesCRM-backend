@@ -7,6 +7,8 @@ export interface IUserEntity {
     password: string
     createdAt: Date
     updatedAt: Date
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
 }
 
 export class UserEntity {
@@ -17,10 +19,12 @@ export class UserEntity {
         public readonly password: string,
         public readonly createdAt: Date,
         public readonly updatedAt: Date,
+        public readonly passwordResetToken: string | null,
+        public readonly passwordResetExpires: Date | null,
     ) { }
 
     static fromObject(props: IUserEntity): UserEntity {
-        const { createdAt, email, id, name, password, updatedAt } = props
+        const { createdAt, email, id, name, password, updatedAt, passwordResetExpires, passwordResetToken } = props
 
         if (!id) throw CustomError.badRequest('id is missing')
         if (!name) throw CustomError.badRequest('name is missing')
@@ -29,7 +33,7 @@ export class UserEntity {
         if (!createdAt) throw CustomError.badRequest('createdAt is missing')
         if (!updatedAt) throw CustomError.badRequest('updatedAt is missing')
 
-        return new UserEntity(id, name, email, password, createdAt, updatedAt)
+        return new UserEntity(id, name, email, password, createdAt, updatedAt, passwordResetToken, passwordResetExpires)
     }
 
     static toDto(user: UserEntity) {
