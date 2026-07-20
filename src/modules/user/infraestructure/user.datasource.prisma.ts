@@ -4,7 +4,7 @@ import { UserEntity } from "../domain/user.entity";
 import { PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 
-
+const PASSWORD_RESET_EXP_MS = 1000 * 60 * 60
 
 export class UserDatasource implements IUserDatasource {
 
@@ -56,7 +56,7 @@ export class UserDatasource implements IUserDatasource {
         try {
             await this.prisma.user.update({
                 where: { id: userId },
-                data: { PasswordResetToken: token }
+                data: { passwordResetToken: token, passwordResetExpires: new Date(Date.now() + PASSWORD_RESET_EXP_MS) }
             })
         } catch (error) {
             handlePrismaError(error)
