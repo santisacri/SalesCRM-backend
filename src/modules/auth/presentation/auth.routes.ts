@@ -1,7 +1,7 @@
 import { Router } from "express";
 import validateBody from "../../../shared/middlewares/validate-body.middleware";
 import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswordSchema } from "./auth.schemas";
-import { authController } from "../../../shared/container/auth.container";
+import { authController, authMiddleware } from "../../../shared/container/auth.container";
 
 
 export class AuthRoutes {
@@ -13,6 +13,7 @@ export class AuthRoutes {
         router.get('/refresh', authController.refresh)
         router.post('/forgot-password', [validateBody(forgotPasswordSchema)], authController.forgotPassword)
         router.post('/reset-password', [validateBody(resetPasswordSchema)], authController.resetPassword)
+        router.post('/logout', [authMiddleware], authController.logout)
 
 
         return router

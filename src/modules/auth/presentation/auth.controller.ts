@@ -6,13 +6,16 @@ import { IRefreshUseCase } from "../application/refresh.use-case";
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { IForgotPasswordUseCase } from "../application/forgot-password.use-case";
 import { IResetPasswordUseCase } from "../application/reset-password.use-case";
+import { ILogoutUseCase } from "../application/logout.use-case";
+import { logoutQuerySchema } from "./auth.schemas";
 
 type UseCases = {
     registerUser: IRegisterUserUseCase,
     loginUser: ILoginUserUseCase,
     refresh: IRefreshUseCase,
     forgotPassword: IForgotPasswordUseCase,
-    resetPassword: IResetPasswordUseCase
+    resetPassword: IResetPasswordUseCase,
+    logout: ILogoutUseCase
 }
 
 export class AuthController {
@@ -83,6 +86,19 @@ export class AuthController {
             const { newPassword, token } = req.body
             await this.useCases.resetPassword.execute(newPassword, token)
             res.status(200).json({ message: 'Password has been successfully reset' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    logout = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const global = logoutQuerySchema.parse(req.query.global)
+            const { id } = req.user!
+            const { refreshToken } = req.cookies
+
+            await this.useCases.logout.execute(global, id, refreshToken)
+            res.status(200).json({ message: 'Logged out successfully' })
         } catch (error) {
             next(error)
         }

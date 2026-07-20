@@ -1,5 +1,6 @@
 import { ForgotPasswordUseCase } from "../../modules/auth/application/forgot-password.use-case";
 import { LoginUserUseCase } from "../../modules/auth/application/login-user.use-case";
+import { LogoutUseCase } from "../../modules/auth/application/logout.use-case";
 import { RefreshUseCase } from "../../modules/auth/application/refresh.use-case";
 import { RegisterUserUseCase } from "../../modules/auth/application/register-user.use-case";
 import { ResetPasswordUseCase } from "../../modules/auth/application/reset-password.use-case";
@@ -15,5 +16,6 @@ const loginUser = new LoginUserUseCase(userRepository, refreshTokenRepository, h
 const refresh = new RefreshUseCase(refreshTokenRepository, jwtService)
 const forgotPassword = new ForgotPasswordUseCase(userRepository, mailService)
 const resetPassword = new ResetPasswordUseCase(userRepository, hashService)
+const logout = new LogoutUseCase(refreshTokenRepository)
 
-export const authController = new AuthController({ registerUser, loginUser, refresh, forgotPassword, resetPassword })
+export const authController = new AuthController({ registerUser, loginUser, refresh, forgotPassword, resetPassword, logout })
