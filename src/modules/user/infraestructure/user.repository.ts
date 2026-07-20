@@ -10,6 +10,13 @@ export class UserRepository implements IUserRepository {
         private readonly userDatasource: IUserDatasource
     ) { }
 
+    async findByPasswordResetToken(token: string): Promise<UserEntity | null> {
+        return this.userDatasource.findByPasswordResetToken(token)
+    }
+
+    async save(user: UserEntity): Promise<void> {
+        return this.userDatasource.save(user)
+    }
 
     async setPasswordResetToken(token: string, userId: string): Promise<void> {
         return this.userDatasource.setPasswordResetToken(token, userId)

@@ -13,7 +13,6 @@ export class UserDatasource implements IUserDatasource {
     ) { }
 
 
-
     async create(data: TRegisterUser): Promise<UserEntity> {
         try {
             const newUser = await this.prisma.user.create({
@@ -58,6 +57,31 @@ export class UserDatasource implements IUserDatasource {
                 where: { id: userId },
                 data: { passwordResetToken: token, passwordResetExpires: new Date(Date.now() + PASSWORD_RESET_EXP_MS) }
             })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async save(user: UserEntity): Promise<void> {
+        try {
+            await this.prisma.user.update({
+                where: { id: user.id },
+                data: user
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async findByPasswordResetToken(token: string): Promise<UserEntity | null> {
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: { passwordResetToken: token }
+            })
+
+            if (!user) return null
+
+            return UserEntity.fromObject(user)
         } catch (error) {
             handlePrismaError(error)
         }
