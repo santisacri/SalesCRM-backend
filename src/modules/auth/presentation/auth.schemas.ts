@@ -35,3 +35,10 @@ export const forgotPasswordSchema = z.object({
 })
 
 export type TForgotPassword = z.infer<typeof forgotPasswordSchema>
+
+export const resetPasswordSchema = z.object({
+    newPassword: passwordValidation,
+    token: z.string()
+})
+
+export type TResetPassword = z.infer<typeof resetPasswordSchema>
