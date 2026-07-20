@@ -1,5 +1,5 @@
 import { IHashService } from "../../../shared/services/hash.service";
-import { IUserDatasource } from "../../user/domain/user.datasource.contract";
+import { IUserRepository } from "../../user/domain/user.repository.contract";
 import { TRegisterUser } from "../presentation/auth.schemas";
 
 export interface IRegisterUserUseCase {
@@ -9,7 +9,7 @@ export interface IRegisterUserUseCase {
 export class RegisterUserUseCase implements IRegisterUserUseCase {
 
     constructor(
-        private readonly userRepo: IUserDatasource,
+        private readonly userRepo: IUserRepository,
         private readonly hashService: IHashService
     ) { }
 
