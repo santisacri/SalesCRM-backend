@@ -5,12 +5,14 @@ import { REFRESH_TOKEN_EXP } from "../../../shared/config/constants";
 import { IRefreshUseCase } from "../application/refresh.use-case";
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { IForgotPasswordUseCase } from "../application/forgot-password.use-case";
+import { IResetPasswordUseCase } from "../application/reset-password.use-case";
 
 type UseCases = {
     registerUser: IRegisterUserUseCase,
     loginUser: ILoginUserUseCase,
     refresh: IRefreshUseCase,
-    forgotPassword: IForgotPasswordUseCase
+    forgotPassword: IForgotPasswordUseCase,
+    resetPassword: IResetPasswordUseCase
 }
 
 export class AuthController {
@@ -70,7 +72,17 @@ export class AuthController {
         try {
             const { email } = req.body
             await this.useCases.forgotPassword.execute(email)
-            res.status(200).json({ message: 'If your email is registered, we will send you a link to reset your password.' })
+            res.status(200).json({ message: 'If your email is registered, we will send you a link to reset your password' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { newPassword, token } = req.body
+            await this.useCases.resetPassword.execute(newPassword, token)
+            res.status(200).json({ message: 'Password has been successfully reset' })
         } catch (error) {
             next(error)
         }
