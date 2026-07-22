@@ -1,4 +1,4 @@
-export const verifyAccountTemplate = (name: string, url: string) => {
+export const verifyAccountHTML = (name: string, url: string) => {
     return `
     <!DOCTYPE html>
     <html lang="en">

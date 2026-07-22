@@ -1,5 +1,6 @@
 import envs from "../../config/envs"
 import { resetPasswordHTML } from "./templates/reset-password.template"
+import { verifyAccountHTML } from "./templates/verify-account.template"
 
 export interface IMailService {
     sendVerifyAccountEmail(to: string, token: string, name: string): Promise<void>
@@ -20,7 +21,7 @@ export class MailService implements IMailService {
     async sendVerifyAccountEmail(to: string, token: string, name: string): Promise<void> {
         const url = `${envs.FRONTEND_URL}/auth/verify-account?token=${token}`
         const subject = `Verify account`
-        const html = resetPasswordHTML(name, url)
+        const html = verifyAccountHTML(name, url)
 
         await this.mailer.send(to, subject, html)
     }

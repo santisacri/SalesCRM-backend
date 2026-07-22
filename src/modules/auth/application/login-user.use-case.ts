@@ -30,11 +30,12 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     async execute(credentials: TLoginUser): Promise<{ user: Omit<IUserEntity, "password">; accessToken: string; refreshToken: string }> {
         const user = await this.userRepo.findByEmail(credentials.email)
 
-        if (!user) throw CustomError.badRequest('Invalid credentials')
+        if (!user) throw CustomError.badRequest('Invalid credentials');
+        if (!user.emailVerified) throw CustomError.forbidden('Please verify your email before logging in');
 
         const isValidPassword = this.hashService.compare(credentials.password, user.password)
 
-        if (!isValidPassword) throw CustomError.badRequest('Invalid credentials')
+        if (!isValidPassword) throw CustomError.badRequest('Invalid credentials');
 
         const accessToken = this.jwtService.sign(user.id, ACCESS_TOKEN_EXP)
 

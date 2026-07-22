@@ -6,16 +6,16 @@ import { RegisterUserUseCase } from "../../modules/auth/application/register-use
 import { ResetPasswordUseCase } from "../../modules/auth/application/reset-password.use-case";
 import { AuthController } from "../../modules/auth/presentation/auth.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
-import { refreshTokenRepository, userRepository } from "./repositories.container";
+import { refreshTokenRepository, tokenRepository, userRepository } from "./repositories.container";
 import { hashService, jwtService, mailService } from "./services.container";
 
 export const authMiddleware = new AuthMiddleware(userRepository, jwtService).validate
 
-const registerUser = new RegisterUserUseCase(userRepository, hashService)
+const registerUser = new RegisterUserUseCase(userRepository, tokenRepository, hashService, mailService)
 const loginUser = new LoginUserUseCase(userRepository, refreshTokenRepository, hashService, jwtService)
 const refresh = new RefreshUseCase(refreshTokenRepository, jwtService)
-const forgotPassword = new ForgotPasswordUseCase(userRepository, mailService)
-const resetPassword = new ResetPasswordUseCase(userRepository, hashService)
+const forgotPassword = new ForgotPasswordUseCase(userRepository, tokenRepository, mailService)
+const resetPassword = new ResetPasswordUseCase(userRepository, tokenRepository, hashService)
 const logout = new LogoutUseCase(refreshTokenRepository)
 
 export const authController = new AuthController({ registerUser, loginUser, refresh, forgotPassword, resetPassword, logout })

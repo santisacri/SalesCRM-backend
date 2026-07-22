@@ -3,26 +3,39 @@ import { IUserRepository } from '../../user/domain/user.repository.contract';
 import { IHashService } from '../../../shared/services/hash.service';
 import { RegisterUserUseCase } from './register-user.use-case';
 import { TRegisterUser } from '../presentation/auth.schemas';
+import { IMailService } from '../../../shared/services/mail/mail.service';
+import { ITokenRepository } from '../../token/domain/token.repository.contract';
+import { UserEntity } from '../../user/domain/user.entity';
 
 describe('RegisterUserUseCase', () => {
     let userRepo: IUserRepository;
+    let tokenRepo: ITokenRepository
     let hashService: IHashService;
+    let mailService: IMailService
     let useCase: RegisterUserUseCase;
 
     const validInput: TRegisterUser = {
-        name: 'Santiago',
-        email: 'santiago@test.com',
+        name: 'John Doe',
+        email: 'test@x.com',
         password: 'Password123',
+    }
+
+    const storedUser: UserEntity = {
+        id: 'id123',
+        name: 'John Doe',
+        password: 'Password123',
+        email: 'test@x.com',
+        emailVerified: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
     }
 
     beforeEach(() => {
         userRepo = {
             create: vi.fn(),
             findByEmail: vi.fn(),
-            findByPasswordResetToken: vi.fn(),
             getById: vi.fn(),
-            setPasswordResetToken: vi.fn(),
-            save: vi.fn(),
+            save: vi.fn()
         }
 
         hashService = {
@@ -30,11 +43,25 @@ describe('RegisterUserUseCase', () => {
             compare: vi.fn()
         }
 
-        useCase = new RegisterUserUseCase(userRepo, hashService);
+        mailService = {
+            sendPasswordResetEmail: vi.fn(),
+            sendVerifyAccountEmail: vi.fn()
+        }
+
+        tokenRepo = {
+            createToken: vi.fn(),
+            findValidBytokenAndType: vi.fn(),
+            invalidateAllByUserAndType: vi.fn(),
+            markAsUsed: vi.fn()
+        }
+
+        useCase = new RegisterUserUseCase(userRepo, tokenRepo, hashService, mailService);
     })
 
     it('should hash the password and use the hash when creating the user', async () => {
         (hashService.hash as Mock).mockReturnValue('hashed-password-123');
+        (userRepo.create as Mock).mockResolvedValue(storedUser);
+        (tokenRepo.createToken as Mock).mockResolvedValue({ rawToken: 'raw-token-123' });
 
         await useCase.execute(validInput);
 
@@ -50,6 +77,9 @@ describe('RegisterUserUseCase', () => {
 
     it('should never pass the plain-text password to create', async () => {
         (hashService.hash as Mock).mockReturnValue('hashed-password-123');
+        (userRepo.create as Mock).mockResolvedValue(storedUser);
+        (tokenRepo.createToken as Mock).mockResolvedValue({ rawToken: 'raw-token-123' });
+
 
         await useCase.execute(validInput);
 
@@ -59,6 +89,9 @@ describe('RegisterUserUseCase', () => {
 
     it('should pass through all non-password fields unchanged', async () => {
         (hashService.hash as Mock).mockReturnValue('hashed-password-123');
+        (userRepo.create as Mock).mockResolvedValue(storedUser);
+        (tokenRepo.createToken as Mock).mockResolvedValue({ rawToken: 'raw-token-123' });
+
 
         await useCase.execute(validInput);
 

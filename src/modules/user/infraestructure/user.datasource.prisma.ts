@@ -4,8 +4,6 @@ import { UserEntity } from "../domain/user.entity";
 import { PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 
-const PASSWORD_RESET_EXP_MS = 1000 * 60 * 60
-
 export class UserDatasource implements IUserDatasource {
 
     constructor(
@@ -51,37 +49,12 @@ export class UserDatasource implements IUserDatasource {
         }
     }
 
-    async setPasswordResetToken(token: string, userId: string): Promise<void> {
-        try {
-            await this.prisma.user.update({
-                where: { id: userId },
-                data: { passwordResetToken: token, passwordResetExpires: new Date(Date.now() + PASSWORD_RESET_EXP_MS) }
-            })
-        } catch (error) {
-            handlePrismaError(error)
-        }
-    }
-
     async save(user: UserEntity): Promise<void> {
         try {
             await this.prisma.user.update({
                 where: { id: user.id },
                 data: user
             })
-        } catch (error) {
-            handlePrismaError(error)
-        }
-    }
-
-    async findByPasswordResetToken(token: string): Promise<UserEntity | null> {
-        try {
-            const user = await this.prisma.user.findUnique({
-                where: { passwordResetToken: token }
-            })
-
-            if (!user) return null
-
-            return UserEntity.fromObject(user)
         } catch (error) {
             handlePrismaError(error)
         }

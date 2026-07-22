@@ -1,6 +1,7 @@
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { IHashService } from "../../../shared/services/hash.service";
-import { TokenUtil } from "../../../shared/utils/token.util";
+import { TokenType } from "../../token/domain/token.entity";
+import { ITokenRepository } from "../../token/domain/token.repository.contract";
 import { UserEntity } from "../../user/domain/user.entity";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
 
@@ -12,27 +13,25 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
 
     constructor(
         private readonly userRepo: IUserRepository,
+        private readonly tokenRepo: ITokenRepository,
         private readonly hashService: IHashService
     ) { }
 
     async execute(newPassword: string, rawToken: string): Promise<void> {
+        const storedToken = await this.tokenRepo.findValidBytokenAndType(rawToken, TokenType.PASSWORD_RESET)
+        if (!storedToken) throw CustomError.unauthorized('Invalid or expired token');
 
-        const hashed = TokenUtil.hash(rawToken)
-
-        const user = await this.userRepo.findByPasswordResetToken(hashed)
-        if (!user) throw CustomError.badRequest('Invalid or expired token');
-        if (user.passwordResetExpires! < new Date()) throw CustomError.badRequest('Invalid or expired token');
+        const user = await this.userRepo.getById(storedToken.userId)
 
         const hashedPassword = this.hashService.hash(newPassword)
 
         const updatedUser = UserEntity.fromObject({
             ...user,
             password: hashedPassword,
-            passwordResetExpires: null,
-            passwordResetToken: null
         })
 
         await this.userRepo.save(updatedUser)
+        await this.tokenRepo.markAsUsed(storedToken.id)
     }
 
 }
