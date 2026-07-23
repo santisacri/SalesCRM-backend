@@ -11,7 +11,8 @@ const envs = {
     JWT_SECRET: env.get('JWT_SECRET').required().asString(),
     RESEND_API_KEY: env.get('RESEND_API_KEY').required().asString(),
     DOMAIN: process.env.IN_PRODUCTION === 'true' ? env.get('DOMAIN').required().asString() : '',
-    FRONTEND_URL: process.env.IN_PRODUCTION === 'true' ? env.get('FRONTEND_URL').required().asUrlString() : 'http://localhost:5173'
+    FRONTEND_URL: process.env.IN_PRODUCTION === 'true' ? env.get('FRONTEND_URL').required().asUrlString() : 'http://localhost:5173',
+    REDIS_URL: env.get('REDIS_URL').required().asUrlString()
 }
 
 export default envs
