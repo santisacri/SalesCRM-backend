@@ -2,9 +2,7 @@ import { ACCESS_TOKEN_EXP } from "../../../shared/config/constants";
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { IHashService } from "../../../shared/services/hash.service";
 import { IJWTService } from "../../../shared/services/jwt.service";
-import { TokenUtil } from "../../../shared/utils/token.util";
 import { IUserEntity, UserEntity } from "../../user/domain/user.entity";
-
 import { IUserRepository } from "../../user/domain/user.repository.contract";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
 import { TLoginUser } from "../presentation/auth.schemas";
@@ -39,15 +37,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
 
         const accessToken = this.jwtService.sign(user.id, ACCESS_TOKEN_EXP)
 
-        const rawRefreshToken = TokenUtil.generateToken()
-        const hashedToken = TokenUtil.hash(rawRefreshToken)
-        const family = crypto.randomUUID()
-
-        await this.refreshTokenRepo.create({
-            userId: user.id,
-            family,
-            token: hashedToken
-        })
+        const { rawRefreshToken } = await this.refreshTokenRepo.create(user.id)
 
         return {
             user: UserEntity.toDto(user),

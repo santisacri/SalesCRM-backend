@@ -30,20 +30,13 @@ export class RefreshUseCase implements IRefreshUseCase {
 
         await this.refreshTokenRepo.revokeById(stored.id)
 
-        const newRawRefreshToken = TokenUtil.generateToken()
-        const newHashedToken = TokenUtil.hash(newRawRefreshToken)
-
-        await this.refreshTokenRepo.create({
-            token: newHashedToken,
-            userId: stored.userId,
-            family: stored.family
-        })
+        const { rawRefreshToken: rawRT } = await this.refreshTokenRepo.create(stored.id)
 
         const newAccessToken = this.jwtService.sign(stored.id, ACCESS_TOKEN_EXP)
 
         return {
             accessToken: newAccessToken,
-            rawRefreshToken: newRawRefreshToken
+            rawRefreshToken: rawRT
         }
     }
 

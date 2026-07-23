@@ -1,5 +1,4 @@
 import { CustomError } from "../../../shared/errors/custom-errors";
-import { TokenUtil } from "../../../shared/utils/token.util";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
 
 export interface ILogoutUseCase {
@@ -16,8 +15,7 @@ export class LogoutUseCase implements ILogoutUseCase {
         if (global) {
             await this.refreshTokenRepo.revokeByUserId(userId)
         } else {
-            const hashed = TokenUtil.hash(rawRefreshToken)
-            const stored = await this.refreshTokenRepo.findByToken(hashed)
+            const stored = await this.refreshTokenRepo.findByToken(rawRefreshToken)
             if (!stored) throw CustomError.unauthorized('Invalid token');
 
             await this.refreshTokenRepo.revokeById(stored.id)

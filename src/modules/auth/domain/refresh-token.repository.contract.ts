@@ -1,7 +1,7 @@
 import { RefreshTokenEntity } from "./refresh-token.entity";
 
 export interface IRefreshTokenRepository {
-    create(data: { token: string, userId: string, family: string }): Promise<RefreshTokenEntity>
+    create(userId: string): Promise<{ rawRefreshToken: string }>
     findByToken(token: string): Promise<RefreshTokenEntity | null>
     revokeById(id: string): Promise<void>
     revokeFamily(family: string): Promise<void>

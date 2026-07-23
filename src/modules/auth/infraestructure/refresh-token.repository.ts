@@ -1,3 +1,4 @@
+import { TokenUtil } from "../../../shared/utils/token.util";
 import { IRefreshTokenDatasource } from "../domain/refresh-token.datasource.contract";
 import { RefreshTokenEntity } from "../domain/refresh-token.entity";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
@@ -9,11 +10,21 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         private readonly refreshTokenDatasource: IRefreshTokenDatasource
     ) { }
 
-    async create(data: { token: string; userId: string; family: string; }): Promise<RefreshTokenEntity> {
-        return this.refreshTokenDatasource.create(data)
+    async create(userId: string): Promise<{ rawRefreshToken: string }> {
+
+        const rawRefreshToken = TokenUtil.generateToken()
+        const hashedToken = TokenUtil.hash(rawRefreshToken)
+        const family = crypto.randomUUID()
+
+        await this.refreshTokenDatasource.create({ family, token: hashedToken, userId })
+
+        return { rawRefreshToken }
     }
     async findByToken(token: string): Promise<RefreshTokenEntity | null> {
-        return this.refreshTokenDatasource.findByToken(token)
+
+        const hashed = TokenUtil.hash(token)
+
+        return this.refreshTokenDatasource.findByToken(hashed)
     }
     async revokeById(id: string): Promise<void> {
         return this.refreshTokenDatasource.revokeById(id)
