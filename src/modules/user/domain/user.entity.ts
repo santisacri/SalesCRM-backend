@@ -28,7 +28,6 @@ export class UserEntity {
         if (!name) throw CustomError.badRequest('name is missing')
         if (!password) throw CustomError.badRequest('password is missing')
         if (!email) throw CustomError.badRequest('email is missing')
-        if (!emailVerified) throw CustomError.badRequest('emailVerified is missing')
         if (!createdAt) throw CustomError.badRequest('createdAt is missing')
         if (!updatedAt) throw CustomError.badRequest('updatedAt is missing')
 
