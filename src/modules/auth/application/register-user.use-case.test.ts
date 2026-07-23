@@ -3,15 +3,15 @@ import { IUserRepository } from '../../user/domain/user.repository.contract';
 import { IHashService } from '../../../shared/services/hash.service';
 import { RegisterUserUseCase } from './register-user.use-case';
 import { TRegisterUser } from '../presentation/auth.schemas';
-import { IMailService } from '../../../shared/services/mail/mail.service';
 import { ITokenRepository } from '../../token/domain/token.repository.contract';
 import { UserEntity } from '../../user/domain/user.entity';
+import { IMailQueueService } from '../../../shared/queue/mail/mail-queue.service.contract';
 
 describe('RegisterUserUseCase', () => {
     let userRepo: IUserRepository;
     let tokenRepo: ITokenRepository
     let hashService: IHashService;
-    let mailService: IMailService
+    let mailQueueService: IMailQueueService
     let useCase: RegisterUserUseCase;
 
     const validInput: TRegisterUser = {
@@ -43,9 +43,8 @@ describe('RegisterUserUseCase', () => {
             compare: vi.fn()
         }
 
-        mailService = {
-            sendPasswordResetEmail: vi.fn(),
-            sendVerifyAccountEmail: vi.fn()
+        mailQueueService = {
+            enqueue: vi.fn()
         }
 
         tokenRepo = {
@@ -55,10 +54,10 @@ describe('RegisterUserUseCase', () => {
             markAsUsed: vi.fn()
         }
 
-        useCase = new RegisterUserUseCase(userRepo, tokenRepo, hashService, mailService);
+        useCase = new RegisterUserUseCase(userRepo, tokenRepo, hashService, mailQueueService);
     })
 
-    it('should hash the password and use the hash when creating the user', async () => {
+    it('should hash the password, use the hash when creating the user and enqueue the mail sending', async () => {
         (hashService.hash as Mock).mockReturnValue('hashed-password-123');
         (userRepo.create as Mock).mockResolvedValue(storedUser);
         (tokenRepo.createToken as Mock).mockResolvedValue({ rawToken: 'raw-token-123' });
@@ -66,6 +65,16 @@ describe('RegisterUserUseCase', () => {
         await useCase.execute(validInput);
 
         expect(hashService.hash).toHaveBeenCalledWith(validInput.password);
+
+        expect(mailQueueService.enqueue).toHaveBeenCalledExactlyOnceWith('send-verify-email', {
+            to: storedUser.email,
+            name: storedUser.name,
+            token: 'raw-token-123'
+        }, {
+            attempts: 3,
+            backoff: { delay: 2000, type: "exponential", }
+        });
+
         expect(hashService.hash).toHaveBeenCalledTimes(1);
 
         expect(userRepo.create).toHaveBeenCalledWith({

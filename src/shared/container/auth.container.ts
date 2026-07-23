@@ -6,15 +6,16 @@ import { RegisterUserUseCase } from "../../modules/auth/application/register-use
 import { ResetPasswordUseCase } from "../../modules/auth/application/reset-password.use-case";
 import { AuthController } from "../../modules/auth/presentation/auth.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { mailQueueService } from "./queue.container";
 import { refreshTokenRepository, tokenRepository, userRepository } from "./repositories.container";
 import { hashService, jwtService, mailService } from "./services.container";
 
 export const authMiddleware = new AuthMiddleware(userRepository, jwtService).validate
 
-const registerUser = new RegisterUserUseCase(userRepository, tokenRepository, hashService, mailService)
+const registerUser = new RegisterUserUseCase(userRepository, tokenRepository, hashService, mailQueueService)
 const loginUser = new LoginUserUseCase(userRepository, refreshTokenRepository, hashService, jwtService)
 const refresh = new RefreshUseCase(refreshTokenRepository, jwtService)
-const forgotPassword = new ForgotPasswordUseCase(userRepository, tokenRepository, mailService)
+const forgotPassword = new ForgotPasswordUseCase(userRepository, tokenRepository, mailQueueService)
 const resetPassword = new ResetPasswordUseCase(userRepository, tokenRepository, hashService)
 const logout = new LogoutUseCase(refreshTokenRepository)
 

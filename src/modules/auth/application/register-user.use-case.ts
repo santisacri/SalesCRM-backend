@@ -1,3 +1,4 @@
+import { IMailQueueService } from "../../../shared/queue/mail/mail-queue.service.contract";
 import { IHashService } from "../../../shared/services/hash.service";
 import { IMailService } from "../../../shared/services/mail/mail.service";
 import { TokenType } from "../../token/domain/token.entity";
@@ -15,7 +16,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
         private readonly userRepo: IUserRepository,
         private readonly tokenRepo: ITokenRepository,
         private readonly hashService: IHashService,
-        private readonly mailService: IMailService
+        private readonly mailQueueService: IMailQueueService
     ) { }
 
     async execute(data: TRegisterUser): Promise<void> {
@@ -27,7 +28,10 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
 
         const { rawToken } = await this.tokenRepo.createToken(TokenType.EMAIL_VERIFICATION, user.id)
 
-        await this.mailService.sendVerifyAccountEmail(user.email, rawToken, user.name)
+        await this.mailQueueService.enqueue('send-verify-email', { name: user.name, to: user.email, token: rawToken }, {
+            attempts: 3,
+            backoff: { type: "exponential", delay: 2000 }
+        })
     }
 
 }
