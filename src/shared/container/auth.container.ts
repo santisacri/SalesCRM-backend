@@ -8,7 +8,7 @@ import { AuthController } from "../../modules/auth/presentation/auth.controller"
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { mailQueueService } from "./queue.container";
 import { refreshTokenRepository, tokenRepository, userRepository } from "./repositories.container";
-import { hashService, jwtService, mailService } from "./services.container";
+import { hashService, jwtService } from "./services.container";
 
 export const authMiddleware = new AuthMiddleware(userRepository, jwtService).validate
 

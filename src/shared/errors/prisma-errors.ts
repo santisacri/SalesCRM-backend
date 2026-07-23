@@ -18,5 +18,6 @@ export default function handlePrismaError(error: unknown): never {
         }
     }
 
+    console.log(error)
     throw CustomError.internal('Something went wrong')
 }

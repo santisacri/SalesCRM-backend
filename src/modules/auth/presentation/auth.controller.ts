@@ -27,7 +27,7 @@ export class AuthController {
     register = async (req: Request, res: Response, next: NextFunction) => {
         try {
             await this.useCases.registerUser.execute(req.body)
-            res.status(201).json({ message: 'Registered successfully' })
+            res.status(201).json({ message: 'Registered successfully, check your email to verify your account' })
         } catch (error) {
             next(error)
         }

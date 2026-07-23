@@ -1,6 +1,5 @@
 import { IMailQueueService } from "../../../shared/queue/mail/mail-queue.service.contract";
 import { IHashService } from "../../../shared/services/hash.service";
-import { IMailService } from "../../../shared/services/mail/mail.service";
 import { TokenType } from "../../token/domain/token.entity";
 import { ITokenRepository } from "../../token/domain/token.repository.contract";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
