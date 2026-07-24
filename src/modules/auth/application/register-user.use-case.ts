@@ -27,10 +27,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
 
         const { rawToken } = await this.tokenRepo.createToken(TokenType.EMAIL_VERIFICATION, user.id)
 
-        await this.mailQueueService.enqueue('send-verify-email', { name: user.name, to: user.email, token: rawToken }, {
-            attempts: 3,
-            backoff: { type: "exponential", delay: 2000 }
-        })
+        await this.mailQueueService.enqueue('send-verify-email', { name: user.name, to: user.email, token: rawToken })
     }
 
 }

@@ -70,9 +70,6 @@ describe('RegisterUserUseCase', () => {
             to: storedUser.email,
             name: storedUser.name,
             token: 'raw-token-123'
-        }, {
-            attempts: 3,
-            backoff: { delay: 2000, type: "exponential", }
         });
 
         expect(hashService.hash).toHaveBeenCalledTimes(1);

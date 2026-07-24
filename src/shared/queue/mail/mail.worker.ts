@@ -21,7 +21,7 @@ export const mailWorker = new Worker<MailJobs[keyof MailJobs], void, keyof MailJ
                 throw new Error(`Unknown job name: ${job.name}`);
         }
     },
-    { connection: redisConnection }
+    { connection: redisConnection, concurrency: 5 }
 );
 
 mailWorker.on("completed", (job) => {

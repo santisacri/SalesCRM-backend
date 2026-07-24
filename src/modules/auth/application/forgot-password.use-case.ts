@@ -25,9 +25,6 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
             to: user.email,
             token: rawToken,
             name: user.name
-        }, {
-            attempts: 3,
-            backoff: { type: "exponential", delay: 2000 }
         })
     }
 
