@@ -36,7 +36,7 @@ export class TokenDatasource implements ITokenDatasource {
     async findValidByHashAndType(tokenHash: string, tokenType: TokenType): Promise<TokenEntity | null> {
         try {
             const stored = await this.prisma.token.findUnique({
-                where: { tokenHash, type: tokenType }
+                where: { tokenHash, type: tokenType, usedAt: null }
             })
 
             if (!stored) return null;
