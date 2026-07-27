@@ -17,6 +17,24 @@ enum TokenEnum {
   PASSWORD_RESET
 }
 
+enum MembershipStatusEnum {
+  ACTIVE
+  SUSPENDED
+}
+
+enum MembershipRoleEnum {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum InvitationStatusEnum {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
 model User {
   id            String         @id @default(uuid(7))
   email         String         @unique
@@ -27,8 +45,52 @@ model User {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   refreshTokens RefreshToken[]
   tokens        Token[]
+  memberships   Membership[]
+  invitations   Invitation[]
 
   @@map("users")
+}
+
+model Organization {
+  id          String       @id @default(uuid(7))
+  name        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  memberships Membership[]
+  invitations Invitation[]
+
+  @@map("organizations")
+}
+
+model Membership {
+  id             String               @id @default(uuid(7))
+  status         MembershipStatusEnum @default(ACTIVE)
+  role           MembershipRoleEnum   @default(MEMBER)
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  organizationId String               @map("organization_id")
+  userId         String               @map("user_id")
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@map("memberships")
+}
+
+model Invitation {
+  id             String               @id @default(uuid(7))
+  email          String
+  role           MembershipRoleEnum   @default(MEMBER)
+  status         InvitationStatusEnum @default(PENDING)
+  organizationId String               @map("organization_id")
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedById    String?              @map("invited_by_id")
+  invitedBy      User?                @relation(fields: [invitedById], references: [id], onDelete: SetNull)
+  expiresAt      DateTime             @map("expires_at")
+  createdAt      DateTime             @default(now()) @map("created_at")
+
+  @@unique([email, organizationId])
+  @@map("invitations")
 }
 
 model Token {
