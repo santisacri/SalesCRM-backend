@@ -4,6 +4,7 @@ import { LogoutUseCase } from "../../modules/auth/application/logout.use-case";
 import { RefreshUseCase } from "../../modules/auth/application/refresh.use-case";
 import { RegisterUserUseCase } from "../../modules/auth/application/register-user.use-case";
 import { ResetPasswordUseCase } from "../../modules/auth/application/reset-password.use-case";
+import { VerifyEmailUseCase } from "../../modules/auth/application/verify-email.use-case";
 import { AuthController } from "../../modules/auth/presentation/auth.controller";
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { mailQueueService } from "./queue.container";
@@ -18,5 +19,14 @@ const refresh = new RefreshUseCase(refreshTokenRepository, jwtService)
 const forgotPassword = new ForgotPasswordUseCase(userRepository, tokenRepository, mailQueueService)
 const resetPassword = new ResetPasswordUseCase(userRepository, tokenRepository, hashService)
 const logout = new LogoutUseCase(refreshTokenRepository)
+const verifyEmail = new VerifyEmailUseCase(tokenRepository, userRepository)
 
-export const authController = new AuthController({ registerUser, loginUser, refresh, forgotPassword, resetPassword, logout })
+export const authController = new AuthController({
+    registerUser,
+    loginUser,
+    refresh,
+    forgotPassword,
+    resetPassword,
+    logout,
+    verifyEmail
+})

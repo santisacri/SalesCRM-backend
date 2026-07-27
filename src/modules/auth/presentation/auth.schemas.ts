@@ -44,3 +44,7 @@ export const resetPasswordSchema = z.object({
 export type TResetPassword = z.infer<typeof resetPasswordSchema>
 
 export const logoutQuerySchema = z.enum(['true', 'false']).transform(v => v === 'true')
+
+export const verifyEmailSchema = z.object({
+    token: z.string()
+})

@@ -2,6 +2,7 @@ import { Worker, Job } from "bullmq";
 import { redisConnection } from "../redis-connection";
 import { mailService } from "../../container/services.container";
 import { MailJobs } from "./mail-queue.service.contract";
+import envs from "../../config/envs";
 
 export const mailWorker = new Worker<MailJobs[keyof MailJobs], void, keyof MailJobs>(
     "mail",
@@ -24,10 +25,10 @@ export const mailWorker = new Worker<MailJobs[keyof MailJobs], void, keyof MailJ
     { connection: redisConnection, concurrency: 5 }
 );
 
-mailWorker.on("completed", (job) => {
+!envs.IN_PRODUCTION && mailWorker.on("completed", (job) => {
     console.log(`[mail-worker] Job ${job.id} (${job.name}) completed`);
 });
 
-mailWorker.on("failed", (job, err) => {
+!envs.IN_PRODUCTION && mailWorker.on("failed", (job, err) => {
     console.error(`[mail-worker] Job ${job?.id} (${job?.name}) failed after ${job?.attemptsMade} attempts:`, err.message);
 });

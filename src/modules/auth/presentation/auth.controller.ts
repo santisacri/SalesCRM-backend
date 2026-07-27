@@ -8,6 +8,7 @@ import { IForgotPasswordUseCase } from "../application/forgot-password.use-case"
 import { IResetPasswordUseCase } from "../application/reset-password.use-case";
 import { ILogoutUseCase } from "../application/logout.use-case";
 import { logoutQuerySchema } from "./auth.schemas";
+import { IVerifyEmailUseCase } from "../application/verify-email.use-case";
 
 type UseCases = {
     registerUser: IRegisterUserUseCase,
@@ -15,7 +16,8 @@ type UseCases = {
     refresh: IRefreshUseCase,
     forgotPassword: IForgotPasswordUseCase,
     resetPassword: IResetPasswordUseCase,
-    logout: ILogoutUseCase
+    logout: ILogoutUseCase,
+    verifyEmail: IVerifyEmailUseCase
 }
 
 export class AuthController {
@@ -99,6 +101,16 @@ export class AuthController {
 
             await this.useCases.logout.execute(global, id, refreshToken)
             res.status(200).json({ message: 'Logged out successfully' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { token } = req.body
+            await this.useCases.verifyEmail.execute(token)
+            res.status(200).json({ message: 'Email verified successfully' })
         } catch (error) {
             next(error)
         }
