@@ -14,24 +14,25 @@ const nameValidation = z
     .min(2, { error: 'At least 2 characters long' })
     .max(50, { error: 'Max 50 characters long' })
     .regex(/^[\p{L}\s'-]+$/u, { error: 'Name cannot contain special characters' });
+const emailValidation = z.email({error: 'invalid email'}).trim().toLowerCase()
 
 export const registerUserSchema = z.object({
     name: nameValidation,
     password: passwordValidation,
-    email: z.email(),
+    email: emailValidation
 })
 
 export type TRegisterUser = z.infer<typeof registerUserSchema>
 
 export const loginUserSchema = z.object({
-    email: z.email(),
+    email: emailValidation,
     password: passwordValidation
 })
 
 export type TLoginUser = z.infer<typeof loginUserSchema>
 
 export const forgotPasswordSchema = z.object({
-    email: z.email()
+    email: emailValidation
 })
 
 export type TForgotPassword = z.infer<typeof forgotPasswordSchema>
