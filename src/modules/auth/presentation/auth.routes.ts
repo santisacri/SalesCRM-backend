@@ -4,7 +4,7 @@ import { forgotPasswordSchema, loginUserSchema, registerUserSchema, resetPasswor
 import { authController, authMiddleware } from "../../../shared/container/auth.container";
 
 
-export class AuthRoutes {
+export class AuthRouter {
     static get routes(): Router {
         const router = Router()
 
