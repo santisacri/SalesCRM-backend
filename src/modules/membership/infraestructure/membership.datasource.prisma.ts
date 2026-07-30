@@ -19,6 +19,18 @@ export class MembershipDatasource implements IMembershipDatasource {
         })
     }
 
+    async findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]> {
+        try {
+            const memberships = await this.prisma.membership.findMany({
+                where: { userId, status }
+            })
+
+            return memberships.map(this.toEntity)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async create(data: TCreateMembership, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
         try {
             const client = tx ?? this.prisma
