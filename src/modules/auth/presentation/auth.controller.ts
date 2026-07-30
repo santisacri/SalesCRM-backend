@@ -9,6 +9,7 @@ import { IResetPasswordUseCase } from "../application/reset-password.use-case";
 import { ILogoutUseCase } from "../application/logout.use-case";
 import { logoutQuerySchema } from "./auth.schemas";
 import { IVerifyEmailUseCase } from "../application/verify-email.use-case";
+import { ISelectOrganizationUseCase } from "../../membership/application/select-organization.use-case";
 
 type UseCases = {
     registerUser: IRegisterUserUseCase,
@@ -17,7 +18,8 @@ type UseCases = {
     forgotPassword: IForgotPasswordUseCase,
     resetPassword: IResetPasswordUseCase,
     logout: ILogoutUseCase,
-    verifyEmail: IVerifyEmailUseCase
+    verifyEmail: IVerifyEmailUseCase,
+    selectOrganization: ISelectOrganizationUseCase
 }
 
 export class AuthController {
@@ -96,7 +98,7 @@ export class AuthController {
     logout = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const global = logoutQuerySchema.parse(req.query.global)
-            const { id } = req.user!
+            const { id } = req.user.entity
             const { refreshToken } = req.cookies
 
             await this.useCases.logout.execute(global, id, refreshToken)
@@ -111,6 +113,17 @@ export class AuthController {
             const { token } = req.body
             await this.useCases.verifyEmail.execute(token)
             res.status(200).json({ message: 'Email verified successfully' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    selectOrganization = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { organizationId } = req.body
+            const { id } = req.user.entity
+            const { accessToken } = await this.useCases.selectOrganization.execute(id, organizationId)
+            res.status(200).json({ accessToken })
         } catch (error) {
             next(error)
         }

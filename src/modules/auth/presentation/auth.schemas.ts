@@ -14,7 +14,7 @@ const nameValidation = z
     .min(2, { error: 'At least 2 characters long' })
     .max(50, { error: 'Max 50 characters long' })
     .regex(/^[\p{L}\s'-]+$/u, { error: 'Name cannot contain special characters' });
-const emailValidation = z.email({error: 'invalid email'}).trim().toLowerCase()
+const emailValidation = z.email({ error: 'invalid email' }).trim().toLowerCase()
 
 export const registerUserSchema = z.object({
     name: nameValidation,
@@ -48,4 +48,8 @@ export const logoutQuerySchema = z.enum(['true', 'false']).transform(v => v === 
 
 export const verifyEmailSchema = z.object({
     token: z.string()
+})
+
+export const selectOrgSchema = z.object({
+    organizationId: z.string()
 })
