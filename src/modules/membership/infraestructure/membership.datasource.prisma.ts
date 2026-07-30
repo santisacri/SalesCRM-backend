@@ -19,6 +19,20 @@ export class MembershipDatasource implements IMembershipDatasource {
         })
     }
 
+    async findActive(userId: string, organizationId: string): Promise<MembershipEntity | null> {
+        try {
+            const membership = await this.prisma.membership.findFirst({
+                where: { userId, organizationId, status: "ACTIVE" }
+            })
+
+            if (!membership) return null
+
+            return this.toEntity(membership)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]> {
         try {
             const memberships = await this.prisma.membership.findMany({

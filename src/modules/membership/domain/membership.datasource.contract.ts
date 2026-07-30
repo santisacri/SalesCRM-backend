@@ -11,4 +11,5 @@ export type TCreateMembership = {
 export interface IMembershipDatasource {
     create(data: TCreateMembership, tx?: PrismaTransactionClient): Promise<MembershipEntity>
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]>
+    findActive(userId: string, organizationId: string): Promise<MembershipEntity | null>
 }

@@ -10,6 +10,9 @@ export class MembershipRepository implements IMembershipRepository {
         private readonly membershipDatasource: IMembershipDatasource
     ) { }
 
+    findActive(userId: string, organizationId: string): Promise<MembershipEntity | null> {
+        return this.membershipDatasource.findActive(userId, organizationId)
+    }
 
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]> {
         return this.membershipDatasource.findManyByUserId(userId, status)
