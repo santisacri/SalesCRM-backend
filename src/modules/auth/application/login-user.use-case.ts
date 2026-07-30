@@ -35,7 +35,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
 
         if (!isValidPassword) throw CustomError.badRequest('Invalid credentials');
 
-        const accessToken = this.jwtService.sign(user.id, ACCESS_TOKEN_EXP)
+        const accessToken = this.jwtService.sign({ sub: user.id }, ACCESS_TOKEN_EXP)
 
         const { rawRefreshToken } = await this.refreshTokenRepo.create(user.id)
 

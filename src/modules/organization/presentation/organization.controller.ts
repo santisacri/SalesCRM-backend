@@ -16,7 +16,7 @@ export class OrganizationController {
 
     createOrg = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = req.user?.id!
+            const userId = req.user.entity.id
             const { name } = req.body as TCreateOrg
 
             const organization = await this.useCases.createOrg.execute(name, userId)
@@ -29,7 +29,7 @@ export class OrganizationController {
 
     getUserOrgs = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const userId = req.user?.id!
+            const userId = req.user.entity.id
 
             const organizations = await this.useCases.getUserOrganizations.execute(userId)
 

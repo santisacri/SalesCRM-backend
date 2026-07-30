@@ -32,7 +32,7 @@ export class RefreshUseCase implements IRefreshUseCase {
 
         const { rawRefreshToken: rawRT } = await this.refreshTokenRepo.create(stored.id)
 
-        const newAccessToken = this.jwtService.sign(stored.id, ACCESS_TOKEN_EXP)
+        const newAccessToken = this.jwtService.sign({ sub: stored.id }, ACCESS_TOKEN_EXP)
 
         return {
             accessToken: newAccessToken,
