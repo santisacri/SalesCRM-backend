@@ -11,6 +11,7 @@ export class OrganizationRouter {
         const router = Router()
 
         router.post('/', [authMiddleware, validateBody(createOrgSchema)], organizationController.createOrg)
+        router.get('/me', [authMiddleware], organizationController.getUserOrgs)
 
         return router
     }
