@@ -11,6 +11,22 @@ export class OrganizationDatasource implements IOrganizationDatasource {
         private readonly prisma: PrismaClient
     ) { }
 
+
+    async findManyById(ids: string[]): Promise<OrganizationEntity[]> {
+        try {
+            const orgs = await this.prisma.organization.findMany({
+                where: {
+                    id: { in: ids }
+                }
+            })
+
+            return orgs.map(OrganizationEntity.fromObject)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+
     async createOrg(name: string, tx?: PrismaTransactionClient): Promise<OrganizationEntity> {
         try {
             const client = tx ?? this.prisma

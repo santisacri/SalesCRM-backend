@@ -10,6 +10,10 @@ export class OrganizationRepository implements IOrganizationRepository {
         private readonly orgDatasource: IOrganizationDatasource
     ) { }
 
+    findManyById(ids: string[]): Promise<OrganizationEntity[]> {
+        return this.orgDatasource.findManyById(ids)
+    }
+
     createOrg(name: string, tx?: PrismaTransactionClient): Promise<OrganizationEntity> {
         return this.orgDatasource.createOrg(name, tx)
     }
