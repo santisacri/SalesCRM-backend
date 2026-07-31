@@ -11,7 +11,19 @@ export class RefreshTokenDatasource implements IRefreshTokenDatasource {
         private readonly prisma: PrismaClient
     ) { }
 
-    async create(data: { token: string; userId: string; family: string; }): Promise<RefreshTokenEntity> {
+
+    async updateOrganization(token: string, organizationId: string): Promise<void> {
+        try {
+            await this.prisma.refreshToken.update({
+                where: { token },
+                data: { organizationId }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async create(data: { token: string; userId: string; family: string; organizationId?: string }): Promise<RefreshTokenEntity> {
         try {
             const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXP * 1000)
             const refreshToken = await this.prisma.refreshToken.create({

@@ -10,28 +10,36 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         private readonly refreshTokenDatasource: IRefreshTokenDatasource
     ) { }
 
-    async create(userId: string): Promise<{ rawRefreshToken: string }> {
+
+    async updateOrganization(rawToken: string, organizationId: string): Promise<void> {
+        const hashedToken = TokenUtil.hash(rawToken)
+        await this.refreshTokenDatasource.updateOrganization(hashedToken, organizationId)
+    }
+
+    async create(userId: string, organizationId?: string): Promise<{ rawRefreshToken: string }> {
 
         const rawRefreshToken = TokenUtil.generateToken()
         const hashedToken = TokenUtil.hash(rawRefreshToken)
         const family = crypto.randomUUID()
 
-        await this.refreshTokenDatasource.create({ family, token: hashedToken, userId })
+        await this.refreshTokenDatasource.create({ family, token: hashedToken, userId, organizationId })
 
         return { rawRefreshToken }
     }
-    async findByToken(token: string): Promise<RefreshTokenEntity | null> {
 
-        const hashed = TokenUtil.hash(token)
-
+    async findByToken(rawToken: string): Promise<RefreshTokenEntity | null> {
+        const hashed = TokenUtil.hash(rawToken)
         return this.refreshTokenDatasource.findByToken(hashed)
     }
+
     async revokeById(id: string): Promise<void> {
         return this.refreshTokenDatasource.revokeById(id)
     }
+
     async revokeFamily(family: string): Promise<void> {
         return this.refreshTokenDatasource.revokeFamily(family)
     }
+    
     async revokeByUserId(userId: string): Promise<void> {
         return this.refreshTokenDatasource.revokeByUserId(userId)
     }

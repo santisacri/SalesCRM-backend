@@ -8,6 +8,7 @@ interface IRefreshTokenEntity {
     createdAt: Date
     revoked: boolean
     userId: string
+    organizationId: string | null
 }
 
 export class RefreshTokenEntity {
@@ -19,10 +20,11 @@ export class RefreshTokenEntity {
         public readonly createdAt: Date,
         public readonly revoked: boolean,
         public readonly userId: string,
+        public readonly organizationId: string | null
     ) { }
 
     static fromObject(props: IRefreshTokenEntity): RefreshTokenEntity {
-        const { id, token, family, expiresAt, createdAt, revoked, userId } = props
+        const { id, token, family, expiresAt, createdAt, revoked, userId, organizationId } = props
 
         if (!id) throw CustomError.badRequest('id is missing')
         if (!token) throw CustomError.badRequest('token is missing')
@@ -32,7 +34,7 @@ export class RefreshTokenEntity {
         if (revoked === undefined || revoked === null) throw CustomError.badRequest('revoked is missing')
         if (!userId) throw CustomError.badRequest('userId is missing')
 
-        return new RefreshTokenEntity(id, token, family, expiresAt, createdAt, revoked, userId)
+        return new RefreshTokenEntity(id, token, family, expiresAt, createdAt, revoked, userId, organizationId)
     }
 
     isExpired(): boolean {
