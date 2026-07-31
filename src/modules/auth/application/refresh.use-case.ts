@@ -1,7 +1,7 @@
 import { ACCESS_TOKEN_EXP } from "../../../shared/config/constants";
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { IJWTService } from "../../../shared/services/jwt.service";
-import { TokenUtil } from "../../../shared/utils/token.util";
+import { IMembershipRepository } from "../../membership/domain/membership.repository.contract";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
 
 export interface IRefreshUseCase {
@@ -12,12 +12,12 @@ export class RefreshUseCase implements IRefreshUseCase {
 
     constructor(
         private readonly refreshTokenRepo: IRefreshTokenRepository,
+        private readonly membershipRepo: IMembershipRepository,
         private readonly jwtService: IJWTService
     ) { }
 
     async execute(rawRefreshToken: string): Promise<{ rawRefreshToken: string; accessToken: string; }> {
-        const hashedToken = TokenUtil.hash(rawRefreshToken)
-        const stored = await this.refreshTokenRepo.findByToken(hashedToken)
+        const stored = await this.refreshTokenRepo.findByToken(rawRefreshToken)
 
         if (!stored) throw CustomError.notFound('Token not found')
 
@@ -30,9 +30,20 @@ export class RefreshUseCase implements IRefreshUseCase {
 
         await this.refreshTokenRepo.revokeById(stored.id)
 
-        const { rawRefreshToken: rawRT } = await this.refreshTokenRepo.create(stored.id)
+        let orgPayload = {};
+        let organizationIdForNewToken: string | undefined = undefined;
 
-        const newAccessToken = this.jwtService.sign({ sub: stored.id }, ACCESS_TOKEN_EXP)
+        if (stored.organizationId) {
+            const membership = await this.membershipRepo.findActive(stored.userId, stored.organizationId);
+            if (membership) {
+                orgPayload = { organizationId: membership.organizationId, role: membership.role };
+                organizationIdForNewToken = membership.organizationId;
+            }
+        }
+
+        const { rawRefreshToken: rawRT } = await this.refreshTokenRepo.create(stored.userId, organizationIdForNewToken)
+
+        const newAccessToken = this.jwtService.sign({ sub: stored.userId, ...orgPayload }, ACCESS_TOKEN_EXP)
 
         return {
             accessToken: newAccessToken,

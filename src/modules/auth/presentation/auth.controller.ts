@@ -122,7 +122,11 @@ export class AuthController {
         try {
             const { organizationId } = req.body
             const { id } = req.user.entity
-            const { accessToken } = await this.useCases.selectOrganization.execute(id, organizationId)
+
+            const refreshToken = req.cookies.refreshToken
+            if (!refreshToken) throw CustomError.badRequest('Missing Refresh token')
+
+            const { accessToken } = await this.useCases.selectOrganization.execute(id, organizationId, refreshToken)
             res.status(200).json({ accessToken })
         } catch (error) {
             next(error)

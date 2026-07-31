@@ -16,12 +16,12 @@ export const authMiddleware = new AuthMiddleware(userRepository, membershipRepos
 
 const registerUser = new RegisterUserUseCase(userRepository, tokenRepository, hashService, mailQueueService)
 const loginUser = new LoginUserUseCase(userRepository, refreshTokenRepository, hashService, jwtService)
-const refresh = new RefreshUseCase(refreshTokenRepository, jwtService)
+const refresh = new RefreshUseCase(refreshTokenRepository, membershipRepository, jwtService)
 const forgotPassword = new ForgotPasswordUseCase(userRepository, tokenRepository, mailQueueService)
 const resetPassword = new ResetPasswordUseCase(userRepository, tokenRepository, hashService)
 const logout = new LogoutUseCase(refreshTokenRepository)
 const verifyEmail = new VerifyEmailUseCase(tokenRepository, userRepository)
-const selectOrganization = new SelectOrganizationUseCase(membershipRepository, jwtService)
+const selectOrganization = new SelectOrganizationUseCase(membershipRepository, refreshTokenRepository, jwtService)
 
 export const authController = new AuthController({
     registerUser,
