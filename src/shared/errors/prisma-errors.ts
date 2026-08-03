@@ -7,7 +7,7 @@ export default function handlePrismaError(error: unknown): never {
         !envs.IN_PRODUCTION && console.log(error.message)
         switch (error.code) {
             case 'P2002': {
-                throw CustomError.badRequest(`Already exist a record with that value`);
+                throw CustomError.badRequest(`Already exist a record with that value`, 'USER_ALREADY_MEMBER');
             }
             case 'P2025':
                 throw CustomError.notFound('Record not found');

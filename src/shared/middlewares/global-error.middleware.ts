@@ -14,7 +14,8 @@ const errorMiddleware = (err: unknown, _req: Request, res: Response, _next: Next
     if (err instanceof CustomError) {
         if (!envs.IN_PRODUCTION) console.log(err)
         res.status(err.statusCode).json({
-            message: err.message
+            message: err.message,
+            code: err.code
         })
         return
     }
