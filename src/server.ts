@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import errorMiddleware from "./shared/middlewares/global-error.middleware";
 import cookieParser from "cookie-parser";
+import cors from 'cors'
+import { corsConfig } from "./shared/config/cors.config";
 
 export class Server {
 
@@ -12,6 +14,7 @@ export class Server {
     ) { }
 
     start() {
+        this.app.use(cors(corsConfig))
 
         this.app.use(express.json())
         this.app.use(cookieParser())
