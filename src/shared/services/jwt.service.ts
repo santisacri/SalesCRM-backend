@@ -3,6 +3,7 @@ import { CustomError } from "../errors/custom-errors"
 import z from "zod"
 import envs from "../config/envs"
 import { MembershipRoleEnum } from "../../modules/membership/domain/membership.entity"
+import { ErrorCode } from "../errors/error-codes"
 
 const jwtPayloadSchema = z.object({
     sub: z.uuid({ version: "v7" }),
@@ -50,7 +51,7 @@ export class JWTService implements IJWTService {
 
             const result = jwtPayloadSchema.safeParse(decoded)
 
-            if (!result.success) throw CustomError.unauthorized('Invalid token payload')
+            if (!result.success) throw CustomError.unauthorized('Invalid token payload', ErrorCode.JWT_EXPIRED)
 
             return result.data
         } catch (error) {
