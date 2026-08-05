@@ -1,5 +1,6 @@
 import { ACCESS_TOKEN_EXP } from "../../../shared/config/constants";
 import { CustomError } from "../../../shared/errors/custom-errors";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 import { IJWTService } from "../../../shared/services/jwt.service";
 import { IMembershipRepository } from "../../membership/domain/membership.repository.contract";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
@@ -19,14 +20,14 @@ export class RefreshUseCase implements IRefreshUseCase {
     async execute(rawRefreshToken: string): Promise<{ rawRefreshToken: string; accessToken: string; }> {
         const stored = await this.refreshTokenRepo.findByToken(rawRefreshToken)
 
-        if (!stored) throw CustomError.notFound('Token not found')
+        if (!stored) throw CustomError.badRequest('Invalid token', ErrorCode.REFRESH_TOKEN_INVALID)
 
         if (stored.revoked) {
             await this.refreshTokenRepo.revokeFamily(stored.family)
-            throw CustomError.unauthorized('Token already used')
+            throw CustomError.badRequest('Session expired', ErrorCode.REFRESH_TOKEN_INVALID)
         }
 
-        if (stored.isExpired()) throw CustomError.unauthorized('Expired token')
+        if (stored.isExpired()) throw CustomError.badRequest('Session expired', ErrorCode.REFRESH_TOKEN_INVALID)
 
         await this.refreshTokenRepo.revokeById(stored.id)
 

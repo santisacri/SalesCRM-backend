@@ -3,6 +3,7 @@ import { CustomError } from "../errors/custom-errors";
 import { IUserRepository } from "../../modules/user/domain/user.repository.contract";
 import { IJWTService } from "../services/jwt.service";
 import { IMembershipRepository } from "../../modules/membership/domain/membership.repository.contract";
+import { ErrorCode } from "../errors/error-codes";
 
 
 export class AuthMiddleware {
@@ -16,7 +17,7 @@ export class AuthMiddleware {
     validate = async (req: Request, _res: Response, next: NextFunction) => {
         try {
             const token = this.extractToken(req);
-            if (!token) throw CustomError.unauthorized('invalid token')
+            if (!token) throw CustomError.unauthorized('invalid token', ErrorCode.TOKEN_INVALID)
 
             const payload = this.jwtService.verify(token)
 

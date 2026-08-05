@@ -1,4 +1,5 @@
 import { CustomError } from "../../../shared/errors/custom-errors";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 import { IHashService } from "../../../shared/services/hash.service";
 import { TokenType } from "../../token/domain/token.entity";
 import { ITokenRepository } from "../../token/domain/token.repository.contract";
@@ -19,7 +20,8 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
 
     async execute(newPassword: string, rawToken: string): Promise<void> {
         const storedToken = await this.tokenRepo.findValidBytokenAndType(rawToken, TokenType.PASSWORD_RESET)
-        if (!storedToken) throw CustomError.unauthorized('Invalid or expired token');
+        if (!storedToken) throw CustomError.badRequest('Invalid token', ErrorCode.TOKEN_INVALID);
+        if (storedToken.expiresAt < new Date(Date.now())) throw CustomError.badRequest('Invalid token', ErrorCode.TOKEN_INVALID)
 
         const user = await this.userRepo.getById(storedToken.userId)
 

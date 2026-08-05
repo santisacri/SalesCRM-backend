@@ -1,5 +1,6 @@
 import { ACCESS_TOKEN_EXP } from "../../../shared/config/constants";
 import { CustomError } from "../../../shared/errors/custom-errors";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 import { IHashService } from "../../../shared/services/hash.service";
 import { IJWTService } from "../../../shared/services/jwt.service";
 import { IUserEntity, UserEntity } from "../../user/domain/user.entity";
@@ -28,12 +29,12 @@ export class LoginUserUseCase implements ILoginUserUseCase {
     async execute(credentials: TLoginUser): Promise<{ user: Omit<IUserEntity, "password">; accessToken: string; refreshToken: string }> {
         const user = await this.userRepo.findByEmail(credentials.email)
 
-        if (!user) throw CustomError.badRequest('Invalid credentials');
-        if (!user.emailVerified) throw CustomError.forbidden('Please verify your email before logging in');
+        if (!user) throw CustomError.badRequest('Invalid credentials', ErrorCode.INVALID_CREDENTIALS);
+        if (!user.emailVerified) throw CustomError.forbidden('Please verify your email before logging in', ErrorCode.USER_NOT_VERIFIED);
 
         const isValidPassword = this.hashService.compare(credentials.password, user.password)
 
-        if (!isValidPassword) throw CustomError.badRequest('Invalid credentials');
+        if (!isValidPassword) throw CustomError.badRequest('Invalid credentials', ErrorCode.INVALID_CREDENTIALS);
 
         const accessToken = this.jwtService.sign({ sub: user.id }, ACCESS_TOKEN_EXP)
 

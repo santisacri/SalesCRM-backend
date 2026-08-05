@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import z, { ZodType } from "zod"
+import { ErrorCode } from "../errors/error-codes"
 
 const validateBody = (schema: ZodType) => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +9,8 @@ const validateBody = (schema: ZodType) => {
 
         if (!success) {
             res.status(400).json({
-                error: z.flattenError(error).fieldErrors
+                error: z.flattenError(error).fieldErrors,
+                code: ErrorCode.VALIDATION_ERROR
             })
         }
 
