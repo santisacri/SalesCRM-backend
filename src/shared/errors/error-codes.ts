@@ -23,7 +23,8 @@ export const ErrorCode = {
     BAD_REQUEST: 'BAD_REQUEST',
     FORBIDDEN: 'FORBIDDEN',
     NOT_FOUND: 'NOT_FOUND',
-    INTERNAL: 'INTERNAL_ERROR'
+    INTERNAL: 'INTERNAL_ERROR',
+    MISSING_REQUIRED_ENTITY_PROP: 'MISSING_REQUIRED_ENTITY_PROP',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
