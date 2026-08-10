@@ -1,4 +1,4 @@
-import { TRegisterUser } from "../../auth/presentation/auth.schemas";
+import { RegisterUserInput } from "../../auth/presentation/auth.schemas";
 import { IUserDatasource } from "../domain/user.datasource.contract";
 import { UserEntity } from "../domain/user.entity";
 import { PrismaClient } from "../../../generated/prisma/client";
@@ -11,7 +11,7 @@ export class UserDatasource implements IUserDatasource {
     ) { }
 
 
-    async create(data: TRegisterUser): Promise<UserEntity> {
+    async create(data: RegisterUserInput): Promise<UserEntity> {
         try {
             const newUser = await this.prisma.user.create({
                 data: data

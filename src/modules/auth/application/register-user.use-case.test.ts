@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
 import { IUserRepository } from '../../user/domain/user.repository.contract';
 import { IHashService } from '../../../shared/services/hash.service';
 import { RegisterUserUseCase } from './register-user.use-case';
-import { TRegisterUser } from '../presentation/auth.schemas';
+import { RegisterUserInput } from '../presentation/auth.schemas';
 import { ITokenRepository } from '../../token/domain/token.repository.contract';
 import { UserEntity } from '../../user/domain/user.entity';
 import { IMailQueueService } from '../../../shared/queue/mail/mail-queue.service.contract';
@@ -14,7 +14,7 @@ describe('RegisterUserUseCase', () => {
     let mailQueueService: IMailQueueService
     let useCase: RegisterUserUseCase;
 
-    const validInput: TRegisterUser = {
+    const validInput: RegisterUserInput = {
         name: 'John Doe',
         email: 'test@x.com',
         password: 'Password123',

@@ -6,4 +6,4 @@ export const createOrgSchema = z.object({
     name: orgNameValidation
 })
 
-export type TCreateOrg = z.infer<typeof createOrgSchema>
+export type CreateOrgInput = z.infer<typeof createOrgSchema>

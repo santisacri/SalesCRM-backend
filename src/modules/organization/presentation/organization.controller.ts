@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { TCreateOrg } from "./organization.schemas"
+import { CreateOrgInput } from "./organization.schemas"
 import { ICreateOrganizationUseCase } from "../application/create-organization.use-case"
 import { IGetUserOrganizationsUseCase } from "../application/get-user-organizations.use-case"
 
@@ -17,7 +17,7 @@ export class OrganizationController {
     createOrg = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.user.entity.id
-            const { name } = req.body as TCreateOrg
+            const { name } = req.body as CreateOrgInput
 
             const organization = await this.useCases.createOrg.execute(name, userId)
 

@@ -6,10 +6,10 @@ import { IJWTService } from "../../../shared/services/jwt.service";
 import { IUserEntity, UserEntity } from "../../user/domain/user.entity";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
 import { IRefreshTokenRepository } from "../domain/refresh-token.repository.contract";
-import { TLoginUser } from "../presentation/auth.schemas";
+import { LoginUserInput } from "../presentation/auth.schemas";
 
 export interface ILoginUserUseCase {
-    execute(credentials: TLoginUser): Promise<{
+    execute(credentials: LoginUserInput): Promise<{
         user: Omit<IUserEntity, "password">,
         accessToken: string,
         refreshToken: string
@@ -26,7 +26,7 @@ export class LoginUserUseCase implements ILoginUserUseCase {
         private readonly jwtService: IJWTService
     ) { }
 
-    async execute(credentials: TLoginUser): Promise<{ user: Omit<IUserEntity, "password">; accessToken: string; refreshToken: string }> {
+    async execute(credentials: LoginUserInput): Promise<{ user: Omit<IUserEntity, "password">; accessToken: string; refreshToken: string }> {
         const user = await this.userRepo.findByEmail(credentials.email)
 
         if (!user) throw CustomError.badRequest('Invalid credentials', ErrorCode.INVALID_CREDENTIALS);

@@ -22,27 +22,27 @@ export const registerUserSchema = z.object({
     email: emailValidation
 })
 
-export type TRegisterUser = z.infer<typeof registerUserSchema>
+export type RegisterUserInput = z.infer<typeof registerUserSchema>
 
 export const loginUserSchema = z.object({
     email: emailValidation,
     password: passwordValidation
 })
 
-export type TLoginUser = z.infer<typeof loginUserSchema>
+export type LoginUserInput = z.infer<typeof loginUserSchema>
 
 export const forgotPasswordSchema = z.object({
     email: emailValidation
 })
 
-export type TForgotPassword = z.infer<typeof forgotPasswordSchema>
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 
 export const resetPasswordSchema = z.object({
     newPassword: passwordValidation,
     token: z.string()
 })
 
-export type TResetPassword = z.infer<typeof resetPasswordSchema>
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
 export const logoutQuerySchema = z.enum(['true', 'false']).transform(v => v === 'true')
 

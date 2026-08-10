@@ -3,10 +3,10 @@ import { IHashService } from "../../../shared/services/hash.service";
 import { TokenType } from "../../token/domain/token.entity";
 import { ITokenRepository } from "../../token/domain/token.repository.contract";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
-import { TRegisterUser } from "../presentation/auth.schemas";
+import { RegisterUserInput } from "../presentation/auth.schemas";
 
 export interface IRegisterUserUseCase {
-    execute(data: TRegisterUser): Promise<void>
+    execute(data: RegisterUserInput): Promise<void>
 }
 
 export class RegisterUserUseCase implements IRegisterUserUseCase {
@@ -18,7 +18,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
         private readonly mailQueueService: IMailQueueService
     ) { }
 
-    async execute(data: TRegisterUser): Promise<void> {
+    async execute(data: RegisterUserInput): Promise<void> {
         const { password, ...rest } = data
 
         const passwordHash = this.hashService.hash(password)

@@ -1,4 +1,4 @@
-import { TRegisterUser } from "../../auth/presentation/auth.schemas";
+import { RegisterUserInput } from "../../auth/presentation/auth.schemas";
 import { IUserDatasource } from "../domain/user.datasource.contract";
 import { UserEntity } from "../domain/user.entity";
 import { IUserRepository } from "../domain/user.repository.contract";
@@ -22,7 +22,7 @@ export class UserRepository implements IUserRepository {
         return this.userDatasource.findByEmail(email)
     }
 
-    async create(data: TRegisterUser): Promise<UserEntity> {
+    async create(data: RegisterUserInput): Promise<UserEntity> {
         return this.userDatasource.create(data)
     }
 
