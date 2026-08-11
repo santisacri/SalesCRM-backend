@@ -1,9 +1,13 @@
 import { NextFunction, Request, Response } from "express"
-import { CreateContactInput } from "./contact.schemas"
+import { ContactDetailSchema, CreateContactInput } from "./contact.schemas"
 import { ICreateContactUseCase } from "../application/create-contact.use-case"
+import { CustomError } from "../../../shared/errors/custom-errors"
+import { ErrorCode } from "../../../shared/errors/error-codes"
+import { IGetContactByIdUseCase } from "../application/get-contact-by-id.use-case"
 
 type UseCases = {
-    createContact: ICreateContactUseCase
+    createContact: ICreateContactUseCase,
+    getContactById: IGetContactByIdUseCase
 }
 
 export class ConctactController {
@@ -23,6 +27,22 @@ export class ConctactController {
             })
 
             res.status(201).json({ contact })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getContactById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const contactId = req.params.contactId as string
+
+            if (!contactId) throw CustomError.badRequest('Missing contactId', ErrorCode.BAD_REQUEST)
+
+            const result = await this.useCases.getContactById.execute(contactId, req.user.organizationId!)
+
+            const contactDetail = ContactDetailSchema.parse(result)
+
+            res.status(201).json({ contactDetail })
         } catch (error) {
             next(error)
         }
