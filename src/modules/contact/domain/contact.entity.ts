@@ -1,7 +1,7 @@
 import { CustomError } from "../../../shared/errors/custom-errors"
 import { ErrorCode } from "../../../shared/errors/error-codes"
 
-export enum ContactSource {
+export enum ContactSourceEnum {
     MANUAL = 'MANUAL',
     WEBSITE = 'WEBSITE',
     REFERRAL = 'REFERRAL',
@@ -15,7 +15,7 @@ export interface IContactEntity {
     email: string | null,
     phone: string | null,
     company: string | null,
-    source: ContactSource,
+    source: ContactSourceEnum,
     ownerId: string,
     createdAt: Date,
     updatedAt: Date,
@@ -30,7 +30,7 @@ export class ContactEntity {
         public email: string | null,
         public phone: string | null,
         public company: string | null,
-        public source: ContactSource,
+        public source: ContactSourceEnum,
         public ownerId: string,
         public createdAt: Date,
         public updatedAt: Date,
