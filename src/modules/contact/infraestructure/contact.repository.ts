@@ -10,6 +10,10 @@ export class ContactRepository implements IContactRepository {
         private readonly contactDatasource: IContactDatasource
     ) { }
 
+    findById(contactId: string, organizationId: string): Promise<ContactEntity | null> {
+        return this.contactDatasource.findById(contactId, organizationId)
+    }
+
     create(data: CreateContactInput, organizationId: string): Promise<ContactEntity> {
         return this.contactDatasource.create(data, organizationId)
     }

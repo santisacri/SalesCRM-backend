@@ -1,7 +1,7 @@
 import { Contact, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { IContactDatasource } from "../domain/contact.datasource.contract";
-import { ContactEntity, ContactSource } from "../domain/contact.entity";
+import { ContactEntity, ContactSourceEnum } from "../domain/contact.entity";
 import { CreateContactInput } from "../presentation/contact.schemas";
 
 export class ContactDatasource implements IContactDatasource {
@@ -13,7 +13,7 @@ export class ContactDatasource implements IContactDatasource {
     private toEntity(props: Contact): ContactEntity {
         return ContactEntity.fromObject({
             ...props,
-            source: props.source as ContactSource
+            source: props.source as ContactSourceEnum
         })
     }
 
@@ -27,6 +27,20 @@ export class ContactDatasource implements IContactDatasource {
             })
 
             return this.toEntity(newContact)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async findById(contactId: string, organizationId: string): Promise<ContactEntity | null> {
+        try {
+            const record = await this.prisma.contact.findUnique({
+                where: { id: contactId, organizationId }
+            })
+
+            if (!record) return null;
+
+            return this.toEntity(record)
         } catch (error) {
             handlePrismaError(error)
         }
