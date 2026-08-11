@@ -147,6 +147,7 @@ model RefreshToken {
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([family])
+  @@index([userId])
   @@map("refresh_tokens")
 }
 
@@ -161,13 +162,13 @@ model Contact {
   ownerId        String        @map("owner_id")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
+  deletedAt      DateTime?     @map("deleted_at")
   organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   owner          User          @relation(fields: [ownerId], references: [id])
   deals          Deal[]
   activities     Activity[]
 
-  @@index([organizationId])
-  @@index([organizationId, ownerId])
+  @@index([organizationId, deletedAt, ownerId])
   @@map("contacts")
 }
 
@@ -188,7 +189,6 @@ model Deal {
   owner             User         @relation(fields: [ownerId], references: [id])
   activities        Activity[]
 
-  @@index([organizationId])
   @@index([organizationId, stage])
   @@map("deals")
 }

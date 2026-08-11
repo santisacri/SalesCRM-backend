@@ -19,6 +19,7 @@ export interface IContactEntity {
     ownerId: string,
     createdAt: Date,
     updatedAt: Date,
+    deletedAt: Date | null,
 }
 
 export class ContactEntity {
@@ -34,10 +35,11 @@ export class ContactEntity {
         public ownerId: string,
         public createdAt: Date,
         public updatedAt: Date,
+        public deletedAt: Date | null
     ) { }
 
     static fromObject(props: IContactEntity): ContactEntity {
-        const { id, organizationId, name, email, phone, company, source, ownerId, createdAt, updatedAt } = props
+        const { id, organizationId, name, email, phone, company, source, ownerId, createdAt, updatedAt, deletedAt } = props
 
         if (!id) throw CustomError.badRequest('Missing id', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
         if (!organizationId) throw CustomError.badRequest('Missing organizationId', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
@@ -47,6 +49,6 @@ export class ContactEntity {
         if (!createdAt) throw CustomError.badRequest('Missing createdAt', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
         if (!updatedAt) throw CustomError.badRequest('Missing updatedAt', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
 
-        return new ContactEntity(id, organizationId, name, email, phone, company, source, ownerId, createdAt, updatedAt)
+        return new ContactEntity(id, organizationId, name, email, phone, company, source, ownerId, createdAt, updatedAt, deletedAt)
     }
 }
