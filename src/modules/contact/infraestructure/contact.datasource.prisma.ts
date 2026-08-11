@@ -35,7 +35,7 @@ export class ContactDatasource implements IContactDatasource {
     async findById(contactId: string, organizationId: string): Promise<ContactEntity | null> {
         try {
             const record = await this.prisma.contact.findUnique({
-                where: { id: contactId, organizationId }
+                where: { id: contactId, organizationId, deletedAt: null }
             })
 
             if (!record) return null;
