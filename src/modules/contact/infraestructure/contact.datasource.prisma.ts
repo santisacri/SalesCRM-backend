@@ -46,6 +46,18 @@ export class ContactDatasource implements IContactDatasource {
         }
     }
 
+    async findMany(organizationId: string): Promise<ContactEntity[]> {
+        try {
+            const record = await this.prisma.contact.findMany({
+                where: { organizationId, deletedAt: null }
+            })
+
+            return (record.length > 0 ? record.map(this.toEntity) : [])
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async deleteById(contactId: string, organizationId: string): Promise<void> {
         try {
             await this.prisma.contact.update({

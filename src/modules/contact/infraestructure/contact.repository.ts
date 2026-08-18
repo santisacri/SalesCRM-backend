@@ -9,6 +9,11 @@ export class ContactRepository implements IContactRepository {
     constructor(
         private readonly contactDatasource: IContactDatasource
     ) { }
+
+    findMany(organizationId: string): Promise<ContactEntity[]> {
+        return this.contactDatasource.findMany(organizationId)
+    }
+
     update(data: UpdateContactInput, contactId: string, organizationId: string): Promise<ContactEntity> {
         return this.contactDatasource.update(data, contactId, organizationId)
     }
