@@ -7,12 +7,14 @@ import { IGetContactByIdUseCase } from "../application/get-contact-by-id.use-cas
 import getContext from "../../../shared/helpers/get-context"
 import { IUpdateContactUseCase } from "../application/update-contact.use-case"
 import { IDeleteContactUseCase } from "../application/delete-contact.use-case"
+import { IListContactsByOrgUseCase } from "../application/list-contacts-by-org.use-case"
 
 type UseCases = {
     createContact: ICreateContactUseCase,
     getContactById: IGetContactByIdUseCase,
     updateContact: IUpdateContactUseCase,
-    deleteContact: IDeleteContactUseCase
+    deleteContact: IDeleteContactUseCase,
+    listContactsByOrg: IListContactsByOrgUseCase
 }
 
 export class ConctactController {
@@ -75,6 +77,18 @@ export class ConctactController {
             await this.useCases.deleteContact.execute(contactId, ctx)
 
             res.status(200).json({ message: 'Contact deleted successfully' })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    listContactsByOrg = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const ctx = getContext(req)
+
+            const contacts = await this.useCases.listContactsByOrg.execute(ctx.organizationId)
+
+            res.status(200).json({ contacts })
         } catch (error) {
             next(error)
         }
