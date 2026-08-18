@@ -2,7 +2,7 @@ import { Contact, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { IContactDatasource } from "../domain/contact.datasource.contract";
 import { ContactEntity, ContactSourceEnum } from "../domain/contact.entity";
-import { CreateContactInput } from "../presentation/contact.schemas";
+import { CreateContactInput, UpdateContactInput } from "../presentation/contact.schemas";
 
 export class ContactDatasource implements IContactDatasource {
 
@@ -46,4 +46,29 @@ export class ContactDatasource implements IContactDatasource {
         }
     }
 
-}
+    async deleteById(contactId: string, organizationId: string): Promise<void> {
+        try {
+            await this.prisma.contact.update({
+                where: { id: contactId, organizationId },
+                data: { deletedAt: new Date(Date.now()) }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async update(data: UpdateContactInput, contactId: string, organizationId: string): Promise<ContactEntity> {
+        try {
+            const updatedContact = await this.prisma.contact.update({
+                where: { id: contactId, organizationId },
+                data
+            })
+
+            return this.toEntity(updatedContact)
+        } catch (error) {
+            console.log(error)
+            handlePrismaError(error)
+        }
+    }
+
+}   
