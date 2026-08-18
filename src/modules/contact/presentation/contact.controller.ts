@@ -6,11 +6,13 @@ import { ErrorCode } from "../../../shared/errors/error-codes"
 import { IGetContactByIdUseCase } from "../application/get-contact-by-id.use-case"
 import getContext from "../../../shared/helpers/get-context"
 import { IUpdateContactUseCase } from "../application/update-contact.use-case"
+import { IDeleteContactUseCase } from "../application/delete-contact.use-case"
 
 type UseCases = {
     createContact: ICreateContactUseCase,
     getContactById: IGetContactByIdUseCase,
-    updateContact: IUpdateContactUseCase
+    updateContact: IUpdateContactUseCase,
+    deleteContact: IDeleteContactUseCase
 }
 
 export class ConctactController {
@@ -60,6 +62,19 @@ export class ConctactController {
             const updatedContact = await this.useCases.updateContact.execute(input, contactId, ctx)
 
             res.status(200).json({ updatedContact })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteContact = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const contactId = req.params.contactId as string
+            const ctx = getContext(req)
+
+            await this.useCases.deleteContact.execute(contactId, ctx)
+
+            res.status(200).json({ message: 'Contact deleted successfully' })
         } catch (error) {
             next(error)
         }

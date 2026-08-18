@@ -14,6 +14,7 @@ export class ContactRouter {
         router.post('/', [authMiddleware, validateBody(createContactSchema)], conctactController.createContact)
         router.get('/:contactId', [authMiddleware, requireOrgMiddleware], conctactController.getContactById)
         router.put('/:contactId', [authMiddleware, requireOrgMiddleware, validateBody(updateContactSchema)], conctactController.updateContact)
+        router.delete('/:contactId', [authMiddleware, requireOrgMiddleware], conctactController.deleteContact)
 
         return router
     }
