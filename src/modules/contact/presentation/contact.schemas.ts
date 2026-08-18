@@ -13,19 +13,34 @@ export const createContactSchema = z.object({
 
 export type CreateContactInput = z.infer<typeof createContactSchema>
 
-export const ContactDetailSchema = z.object({
-    contact: z.object({
-        id: z.string(),
-        organizationId: z.string(),
-        name: z.string(),
-        email: z.string().nullable(),
-        phone: z.string().nullable(),
-        company: z.string().nullable(),
-        source: z.enum(ContactSourceEnum),
-        ownerId: z.string(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-    }),
+export const contactSchema = z.object({
+    id: z.string(),
+    organizationId: z.string(),
+    name: z.string(),
+    email: z.string().nullable(),
+    phone: z.string().nullable(),
+    company: z.string().nullable(),
+    source: z.enum(ContactSourceEnum),
+    ownerId: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    deletedAt: z.date().nullable()
+})
+
+export const updateContactSchema = z.object({
+    name: z.string(),
+    email: z.string().nullable(),
+    phone: z.string().nullable(),
+    company: z.string().nullable(),
+    source: z.enum(ContactSourceEnum),
+})
+
+export type UpdateContactInput = z.infer<typeof updateContactSchema>
+
+export type ContactInput = z.infer<typeof contactSchema>
+
+export const contactDetailSchema = z.object({
+    contact: contactSchema,
     deals: z.array(
         z.object({
             id: z.string(),
@@ -44,4 +59,4 @@ export const ContactDetailSchema = z.object({
     )
 })
 
-export type ContactDetailOutput = z.infer<typeof ContactDetailSchema>
+export type ContactDetailOutput = z.infer<typeof contactDetailSchema>
