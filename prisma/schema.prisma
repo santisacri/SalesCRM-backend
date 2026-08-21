@@ -72,6 +72,7 @@ model User {
   contacts      Contact[]
   deals         Deal[]
   activities    Activity[]
+  teams         Team[]
 
   @@map("users")
 }
@@ -86,8 +87,28 @@ model Organization {
   contacts    Contact[]
   deals       Deal[]
   activities  Activity[]
+  teams       Team[]
 
   @@map("organizations")
+}
+
+model Team {
+  id             String @id @default(uuid(7))
+  organizationId String @map("organization_id")
+  adminId        String @unique @map("admin_id")
+  name           String
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  admin        User         @relation(fields: [adminId], references: [id])
+  members      Membership[]
+  deals        Deal[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([organizationId, deletedAt])
+  @@map("teams")
 }
 
 model Membership {
@@ -98,8 +119,10 @@ model Membership {
   updatedAt      DateTime             @updatedAt @map("updated_at")
   organizationId String               @map("organization_id")
   userId         String               @map("user_id")
+  teamId         String?
   user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  team           Team?                @relation(fields: [teamId], references: [id])
 
   @@unique([userId, organizationId])
   @@map("memberships")
@@ -188,6 +211,8 @@ model Deal {
   contact           Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
   owner             User         @relation(fields: [ownerId], references: [id])
   activities        Activity[]
+  team              Team         @relation(fields: [teamId], references: [id])
+  teamId            String
 
   @@index([organizationId, stage])
   @@map("deals")
