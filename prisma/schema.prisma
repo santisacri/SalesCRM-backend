@@ -119,7 +119,7 @@ model Membership {
   updatedAt      DateTime             @updatedAt @map("updated_at")
   organizationId String               @map("organization_id")
   userId         String               @map("user_id")
-  teamId         String?
+  teamId         String?              @map("team_id")
   user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   team           Team?                @relation(fields: [teamId], references: [id])
@@ -212,7 +212,7 @@ model Deal {
   owner             User         @relation(fields: [ownerId], references: [id])
   activities        Activity[]
   team              Team         @relation(fields: [teamId], references: [id])
-  teamId            String
+  teamId            String @map("team_id")
 
   @@index([organizationId, stage])
   @@map("deals")
