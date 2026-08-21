@@ -28,12 +28,13 @@ export class AuthMiddleware {
                     : Promise.resolve(null),
             ]);
 
-            if (payload.organizationId && !membership) throw CustomError.unauthorized('You dont have access to this organization');
+            if (payload.organizationId && !membership) throw CustomError.forbidden('You dont have access to this organization', ErrorCode.MEMBERSHIP_NOT_ACTIVE);
 
             req.user = {
                 entity: user,
-                organizationId: membership ? membership.organizationId : undefined,
-                role: membership ? membership.role : undefined,
+                organizationId: membership ? membership.organizationId : null,
+                role: membership ? membership.role : null,
+                teamId: membership ? membership.teamId : null
             };
 
             next();

@@ -9,6 +9,7 @@ const jwtPayloadSchema = z.object({
     sub: z.uuid({ version: "v7" }),
     organizationId: z.uuid({ version: "v7" }).optional(),
     role: z.enum(MembershipRoleEnum).optional(),
+    teamId: z.uuid({ version: "v7" }).optional(),
     iat: z.number(),
     exp: z.number(),
     aud: z.string(),
@@ -21,6 +22,7 @@ type JwtSignPayload = {
     sub: string,
     organizationId?: string,
     role?: MembershipRoleEnum,
+    teamId?: string,
 }
 
 export interface IJWTService {

@@ -1,7 +1,8 @@
 import { MembershipRoleEnum } from "../../modules/membership/domain/membership.entity"
 
-export type Ctx = {
+export type OrgScopedCtx = {
     userId: string,
     organizationId: string,
-    role: MembershipRoleEnum
+    role: MembershipRoleEnum,
+    teamId: string | null,
 }

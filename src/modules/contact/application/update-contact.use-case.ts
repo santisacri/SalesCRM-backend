@@ -1,13 +1,13 @@
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { ErrorCode } from "../../../shared/errors/error-codes";
-import { Ctx } from "../../../shared/types/context.types";
+import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { MembershipRoleEnum } from "../../membership/domain/membership.entity";
 import { ContactEntity } from "../domain/contact.entity";
 import { IContactRepository } from "../domain/contact.repository.contract";
 import { UpdateContactInput } from "../presentation/contact.schemas";
 
 export interface IUpdateContactUseCase {
-    execute(input: UpdateContactInput, contactId: string, ctx: Ctx): Promise<ContactEntity>
+    execute(input: UpdateContactInput, contactId: string, ctx: OrgScopedCtx): Promise<ContactEntity>
 }
 
 export class UpdateContactUseCase implements IUpdateContactUseCase {
@@ -16,7 +16,7 @@ export class UpdateContactUseCase implements IUpdateContactUseCase {
         private readonly contactRepo: IContactRepository,
     ) { }
 
-    async execute(input: UpdateContactInput, contactId: string, ctx: Ctx): Promise<ContactEntity> {
+    async execute(input: UpdateContactInput, contactId: string, ctx: OrgScopedCtx): Promise<ContactEntity> {
         const storedContact = await this.contactRepo.findById(contactId, ctx.organizationId)
 
         if (!storedContact) throw CustomError.notFound('Contact not found', ErrorCode.NOT_FOUND);

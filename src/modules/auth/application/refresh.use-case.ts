@@ -37,7 +37,7 @@ export class RefreshUseCase implements IRefreshUseCase {
         if (stored.organizationId) {
             const membership = await this.membershipRepo.findActive(stored.userId, stored.organizationId);
             if (membership) {
-                orgPayload = { organizationId: membership.organizationId, role: membership.role };
+                orgPayload = { organizationId: membership.organizationId, role: membership.role, teamId: membership.teamId };
                 organizationIdForNewToken = membership.organizationId;
             }
         }

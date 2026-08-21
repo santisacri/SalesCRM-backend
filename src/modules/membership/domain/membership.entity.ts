@@ -17,6 +17,7 @@ interface IMembershipEntity {
     role: MembershipRoleEnum
     organizationId: string
     userId: string
+    teamId: string | null
     createdAt: Date
     updatedAt: Date
 }
@@ -29,13 +30,14 @@ export class MembershipEntity {
         public role: MembershipRoleEnum,
         public organizationId: string,
         public userId: string,
+        public teamId: string | null,
         public createdAt: Date,
         public updatedAt: Date
     ) { }
 
 
     static fromObject(props: IMembershipEntity): MembershipEntity {
-        const { id, status, role, organizationId, userId, createdAt, updatedAt } = props
+        const { id, status, role, organizationId, userId, teamId, createdAt, updatedAt } = props
 
         if (!id) throw CustomError.badRequest('[MembershipEntity] Missing id');
         if (!status) throw CustomError.badRequest('[MembershipEntity] Missing status');
@@ -45,6 +47,6 @@ export class MembershipEntity {
         if (!createdAt) throw CustomError.badRequest('[MembershipEntity] Missing createdAt');
         if (!updatedAt) throw CustomError.badRequest('[MembershipEntity] Missing updatedAt');
 
-        return new MembershipEntity(id, status, role, organizationId, userId, createdAt, updatedAt)
+        return new MembershipEntity(id, status, role, organizationId, userId, teamId, createdAt, updatedAt)
     }
 }

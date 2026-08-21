@@ -6,8 +6,9 @@ declare global {
         interface Request {
             user: {
                 entity: UserEntity;
-                organizationId?: string;
-                role?: MembershipRoleEnum;
+                organizationId: string | null;
+                role: MembershipRoleEnum | null;
+                teamId: string | null;
             };
         }
     }

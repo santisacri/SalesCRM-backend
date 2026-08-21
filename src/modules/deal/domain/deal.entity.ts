@@ -1,4 +1,5 @@
 import { CustomError } from "../../../shared/errors/custom-errors"
+import { ErrorCode } from "../../../shared/errors/error-codes"
 
 export enum DealStageEnum {
     QUALIFIED = 'QUALIFIED',
@@ -11,6 +12,7 @@ export enum DealStageEnum {
 interface IDealEntity {
     id: string
     organizationId: string
+    teamId: string
     contactId: string
     title: string
     amount: number
@@ -27,6 +29,7 @@ export class DealEntity {
     private constructor(
         public id: string,
         public organizationId: string,
+        public teamId: string,
         public contactId: string,
         public title: string,
         public amount: number,
@@ -40,18 +43,19 @@ export class DealEntity {
 
 
     static fromObject(props: IDealEntity): DealEntity {
-        const { id, organizationId, contactId, title, amount, stage, ownerId, expectedCloseDate, closedAt, createdAt, updatedAt } = props
+        const { id, organizationId, teamId, contactId, title, amount, stage, ownerId, expectedCloseDate, closedAt, createdAt, updatedAt } = props
 
-        if (!id) throw CustomError.badRequest('[DealEntity] Missing id');
-        if (!organizationId) throw CustomError.badRequest('[DealEntity] Missing organizationId');
-        if (!contactId) throw CustomError.badRequest('[DealEntity] Missing contactId');
-        if (!title) throw CustomError.badRequest('[DealEntity] Missing title');
-        if (amount === undefined || amount === null) throw CustomError.badRequest('[DealEntity] Missing amount');
-        if (!stage) throw CustomError.badRequest('[DealEntity] Missing stage');
-        if (!ownerId) throw CustomError.badRequest('[DealEntity] Missing ownerId');
-        if (!createdAt) throw CustomError.badRequest('[DealEntity] Missing createdAt');
-        if (!updatedAt) throw CustomError.badRequest('[DealEntity] Missing updatedAt');
+        if (!id) throw CustomError.badRequest('[DealEntity] Missing id', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!organizationId) throw CustomError.badRequest('[DealEntity] Missing organizationId', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!teamId) throw CustomError.badRequest('[DealEntity] Missing teamId', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!contactId) throw CustomError.badRequest('[DealEntity] Missing contactId', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!title) throw CustomError.badRequest('[DealEntity] Missing title', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (amount === undefined || amount === null) throw CustomError.badRequest('[DealEntity] Missing amount', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!stage) throw CustomError.badRequest('[DealEntity] Missing stage', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!ownerId) throw CustomError.badRequest('[DealEntity] Missing ownerId', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!createdAt) throw CustomError.badRequest('[DealEntity] Missing createdAt', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
+        if (!updatedAt) throw CustomError.badRequest('[DealEntity] Missing updatedAt', ErrorCode.MISSING_REQUIRED_ENTITY_PROP);
 
-        return new DealEntity(id, organizationId, contactId, title, amount, stage, ownerId, expectedCloseDate ?? null, closedAt ?? null, createdAt, updatedAt)
+        return new DealEntity(id, organizationId, teamId, contactId, title, amount, stage, ownerId, expectedCloseDate ?? null, closedAt ?? null, createdAt, updatedAt)
     }
 }
