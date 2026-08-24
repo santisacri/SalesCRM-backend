@@ -4,7 +4,7 @@ import { OrgScopedCtx } from "../types/context.types";
 import { Request } from "express";
 
 const getContext = (req: Request): OrgScopedCtx => {
-    if (!req.user.organizationId || !req.user.role || !req.user.teamId) throw CustomError.forbidden("Select organization", ErrorCode.ORGANIZATION_NOT_SELECTED);
+    if (!req.user.organizationId || !req.user.role) throw CustomError.forbidden("Select organization", ErrorCode.ORGANIZATION_NOT_SELECTED);
 
     return {
         organizationId: req.user.organizationId,
