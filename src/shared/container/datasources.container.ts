@@ -4,6 +4,7 @@ import { ContactDatasource } from "../../modules/contact/infraestructure/contact
 import { DealDatasource } from "../../modules/deal/infraestructure/deal.datasource.prisma";
 import { MembershipDatasource } from "../../modules/membership/infraestructure/membership.datasource.prisma";
 import { OrganizationDatasource } from "../../modules/organization/infraestructure/organization.datasource.prisma";
+import { TeamDatasource } from "../../modules/team/infraestructure/team.datasource";
 import { TokenDatasource } from "../../modules/token/infraestructure/token.datasource.prisma";
 import { UserDatasource } from "../../modules/user/infraestructure/user.datasource.prisma";
 import { prisma } from "../lib/prisma";
@@ -17,3 +18,4 @@ export const membershipDatasource = new MembershipDatasource(prisma)
 export const contactDatasource = new ContactDatasource(prisma)
 export const dealDatasource = new DealDatasource(prisma)
 export const activityDatasource = new ActivityDatasource(prisma)
+export const teamDatasource = new TeamDatasource(prisma)

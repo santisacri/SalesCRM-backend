@@ -4,9 +4,10 @@ import { ContactRepository } from "../../modules/contact/infraestructure/contact
 import { DealRepository } from "../../modules/deal/infraestructure/deal.repository";
 import { MembershipRepository } from "../../modules/membership/infraestructure/membership.repository";
 import { OrganizationRepository } from "../../modules/organization/infraestructure/organization.repository";
+import { TeamRepository } from "../../modules/team/infraestructure/team.repository";
 import { TokenRepository } from "../../modules/token/infraestructure/token.repository";
 import { UserRepository } from "../../modules/user/infraestructure/user.repository";
-import { activityDatasource, contactDatasource, dealDatasource, membershipDatasource, organizationDatasource, refreshTokenDatasource, tokenDatasource, userDatasource } from "./datasources.container";
+import { activityDatasource, contactDatasource, dealDatasource, membershipDatasource, organizationDatasource, refreshTokenDatasource, teamDatasource, tokenDatasource, userDatasource } from "./datasources.container";
 
 
 
@@ -18,3 +19,4 @@ export const membershipRepository = new MembershipRepository(membershipDatasourc
 export const contactRepository = new ContactRepository(contactDatasource)
 export const dealRepository = new DealRepository(dealDatasource)
 export const activityRepository = new ActivityRepository(activityDatasource)
+export const teamRepository = new TeamRepository(teamDatasource)
