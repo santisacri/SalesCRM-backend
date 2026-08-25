@@ -7,7 +7,7 @@ import { authMiddleware } from "../../../shared/container/auth.container";
 
 export class OrganizationRouter {
 
-    static get Routes(): Router {
+    static get routes() {
         const router = Router()
 
         router.post('/', [authMiddleware, validateBody(createOrgSchema)], organizationController.createOrg)

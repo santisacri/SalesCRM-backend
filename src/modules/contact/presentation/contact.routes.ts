@@ -8,7 +8,7 @@ import requireOrgMiddleware from "../../../shared/middlewares/require-org.middle
 
 export class ContactRouter {
 
-    static get Routes(): Router {
+    static get routes() {
         const router = Router()
 
         router.post('/', [authMiddleware, validateBody(createContactSchema)], conctactController.createContact)
