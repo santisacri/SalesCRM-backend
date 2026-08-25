@@ -1,15 +1,10 @@
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
-import { MembershipEntity, MembershipStatusEnum, MembershipRoleEnum } from "./membership.entity";
+import { CreateMembershipInput } from "../presentation/membership.schemas";
+import { MembershipEntity, MembershipStatusEnum } from "./membership.entity";
 
-export type TCreateMembership = {
-    userId: string,
-    organizationId: string,
-    role: MembershipRoleEnum,
-    status: MembershipStatusEnum
-}
 
 export interface IMembershipDatasource {
-    create(data: TCreateMembership, tx?: PrismaTransactionClient): Promise<MembershipEntity>
+    create(data: CreateMembershipInput, organizationId: string, tx?: PrismaTransactionClient): Promise<MembershipEntity>
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]>
     findActive(userId: string, organizationId: string): Promise<MembershipEntity | null>
 }

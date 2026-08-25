@@ -1,8 +1,9 @@
 import { Membership, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
-import { IMembershipDatasource, TCreateMembership } from "../domain/membership.datasource.contract";
+import { IMembershipDatasource } from "../domain/membership.datasource.contract";
 import { MembershipEntity, MembershipRoleEnum, MembershipStatusEnum } from "../domain/membership.entity";
+import { CreateMembershipInput } from "../presentation/membership.schemas";
 
 
 export class MembershipDatasource implements IMembershipDatasource {
@@ -45,10 +46,12 @@ export class MembershipDatasource implements IMembershipDatasource {
         }
     }
 
-    async create(data: TCreateMembership, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
+    async create(data: CreateMembershipInput, organizationId: string, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
         try {
             const client = tx ?? this.prisma
-            const membership = await client.membership.create({ data })
+            const membership = await client.membership.create({
+                data: { ...data, organizationId }
+            })
 
             return this.toEntity(membership)
         } catch (error) {
