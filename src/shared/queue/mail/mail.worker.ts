@@ -18,6 +18,11 @@ export const mailWorker = new Worker<MailJobs[keyof MailJobs], void, keyof MailJ
                 await mailService.sendPasswordResetEmail(to, token, name);
                 break;
             }
+            case "send-invitation-email": {
+                const { to, invitedByName, organizationName, hashedToken } = job.data as MailJobs["send-invitation-email"];
+                await mailService.sendInvitationEmail(to, invitedByName, organizationName, hashedToken);
+                break;
+            }
             default:
                 throw new Error(`Unknown job name: ${job.name}`);
         }
