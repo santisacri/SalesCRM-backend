@@ -2,10 +2,11 @@ import z from "zod";
 import { ContactSourceEnum } from "../domain/contact.entity";
 import { DealStageEnum } from "../../deal/domain/deal.entity";
 import { ActivityTypeEnum } from "../../activity/domain/activity.entity";
+import { emailValidation } from "../../auth/presentation/auth.schemas";
 
 export const createContactSchema = z.object({
     name: z.string().min(2).max(30).trim(),
-    email: z.email().trim(),
+    email: emailValidation,
     phone: z.string().max(20).trim(),
     company: z.string().min(2).max(30),
     ownerId: z.uuid({ version: 'v7' })
