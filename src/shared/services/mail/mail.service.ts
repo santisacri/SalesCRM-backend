@@ -1,10 +1,12 @@
 import envs from "../../config/envs"
+import { invitationHTML } from "./templates/invitation.template"
 import { resetPasswordHTML } from "./templates/reset-password.template"
 import { verifyAccountHTML } from "./templates/verify-account.template"
 
 export interface IMailService {
     sendVerifyAccountEmail(to: string, token: string, name: string): Promise<void>
     sendPasswordResetEmail(to: string, token: string, name: string): Promise<void>
+    sendInvitationEmail(to: string, invitedByName: string, organizationName: string, hashedToken: string): Promise<void>
 }
 
 export interface IMailer {
@@ -17,6 +19,15 @@ export class MailService implements IMailService {
         private readonly mailer: IMailer
     ) { }
 
+    async sendInvitationEmail(to: string, invitedByName: string, organizationName: string, hashedToken: string): Promise<void> {
+        const url = new URL('/invitation', envs.FRONTEND_URL)
+        url.searchParams.set('token', hashedToken)
+
+        const subject = `Invitation`
+        const html = invitationHTML(invitedByName, organizationName, url)
+
+        await this.mailer.send(to, subject, html)
+    }
 
     async sendVerifyAccountEmail(to: string, token: string, name: string): Promise<void> {
         const url = `${envs.FRONTEND_URL}/auth/verify-account?token=${token}`
