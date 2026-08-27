@@ -1,5 +1,5 @@
 import { ITransactionManager } from "../../../shared/database/transaction-manager";
-import { MembershipRoleEnum, MembershipStatusEnum } from "../../membership/domain/membership.entity";
+import { MembershipRoleEnum } from "../../membership/domain/membership.entity";
 import { IMembershipRepository } from "../../membership/domain/membership.repository.contract";
 import { OrganizationEntity } from "../domain/organization.entity";
 import { IOrganizationRepository } from "../domain/organization.repository.contract";
@@ -22,10 +22,8 @@ export class CreateOrganizationUseCase implements ICreateOrganizationUseCase {
 
             await this.membershipRepo.create({
                 userId,
-                organizationId: organization.id,
                 role: MembershipRoleEnum.OWNER,
-                status: MembershipStatusEnum.ACTIVE
-            }, tx)
+            }, organization.id, tx)
 
             return organization
         })
