@@ -20,7 +20,9 @@ export class InvitationRepository implements IInvitationRepository {
         return { dbRecord, rawToken }
     }
     findByToken(token: string): Promise<InvitationEntity | null> {
-        return this.InvitationDatasource.findByToken(token)
+        const hashedToken = TokenUtil.hash(token)
+
+        return this.InvitationDatasource.findByToken(hashedToken)
     }
     listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         return this.InvitationDatasource.listByOrg(organizationId)
