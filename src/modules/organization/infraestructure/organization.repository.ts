@@ -10,6 +10,10 @@ export class OrganizationRepository implements IOrganizationRepository {
         private readonly orgDatasource: IOrganizationDatasource
     ) { }
 
+    getById(id: string): Promise<OrganizationEntity> {
+        return this.orgDatasource.getById(id)
+    }
+
     findManyById(ids: string[]): Promise<OrganizationEntity[]> {
         return this.orgDatasource.findManyById(ids)
     }

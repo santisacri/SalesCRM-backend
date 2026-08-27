@@ -12,6 +12,19 @@ export class OrganizationDatasource implements IOrganizationDatasource {
     ) { }
 
 
+    async getById(id: string): Promise<OrganizationEntity> {
+        try {
+            const organization = await this.prisma.organization.findUniqueOrThrow({
+                where: { id }
+            })
+
+            return OrganizationEntity.fromObject(organization)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+
     async findManyById(ids: string[]): Promise<OrganizationEntity[]> {
         try {
             const orgs = await this.prisma.organization.findMany({
