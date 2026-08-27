@@ -19,8 +19,8 @@ export const mailWorker = new Worker<MailJobs[keyof MailJobs], void, keyof MailJ
                 break;
             }
             case "send-invitation-email": {
-                const { to, invitedByName, organizationName, hashedToken } = job.data as MailJobs["send-invitation-email"];
-                await mailService.sendInvitationEmail(to, invitedByName, organizationName, hashedToken);
+                const { to, invitedByName, organizationName, rawToken } = job.data as MailJobs["send-invitation-email"];
+                await mailService.sendInvitationEmail(to, invitedByName, organizationName, rawToken);
                 break;
             }
             default:

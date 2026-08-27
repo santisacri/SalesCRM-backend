@@ -19,9 +19,9 @@ export class MailService implements IMailService {
         private readonly mailer: IMailer
     ) { }
 
-    async sendInvitationEmail(to: string, invitedByName: string, organizationName: string, hashedToken: string): Promise<void> {
+    async sendInvitationEmail(to: string, invitedByName: string, organizationName: string, rawToken: string): Promise<void> {
         const url = new URL('/invitation', envs.FRONTEND_URL)
-        url.searchParams.set('token', hashedToken)
+        url.searchParams.set('token', rawToken)
 
         const subject = `Invitation`
         const html = invitationHTML(invitedByName, organizationName, url)

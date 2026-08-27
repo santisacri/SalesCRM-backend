@@ -10,14 +10,14 @@ export class InvitationRepository implements IInvitationRepository {
         private readonly InvitationDatasource: IInvitationDatasource
     ) { }
 
-    async create(email: string, invitedByCtx: OrgScopedCtx): Promise<{ dbRecord: InvitationEntity, hashedToken: string }> {
+    async create(email: string, invitedByCtx: OrgScopedCtx): Promise<{ dbRecord: InvitationEntity, rawToken: string }> {
 
-        const token = TokenUtil.generateToken()
-        const hashedToken = TokenUtil.hash(token)
+        const rawToken = TokenUtil.generateToken()
+        const hashedToken = TokenUtil.hash(rawToken)
 
-        const dbRecord = await this.InvitationDatasource.create(email, token, invitedByCtx)
+        const dbRecord = await this.InvitationDatasource.create(email, hashedToken, invitedByCtx)
 
-        return { dbRecord, hashedToken }
+        return { dbRecord, rawToken }
     }
     findByToken(token: string): Promise<InvitationEntity | null> {
         return this.InvitationDatasource.findByToken(token)

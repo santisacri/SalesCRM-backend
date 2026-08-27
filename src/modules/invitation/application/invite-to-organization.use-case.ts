@@ -20,7 +20,7 @@ export class InviteToOrganizationUseCase implements IInviteToOrganizationUseCase
 
     async execute(email: string, userCtx: OrgScopedCtx): Promise<InvitationEntity> {
 
-        const [{ dbRecord, hashedToken }, user, organization] = await Promise.all([
+        const [{ dbRecord, rawToken }, user, organization] = await Promise.all([
             await this.invitationRepo.create(email, userCtx),
             await this.userRepo.getById(userCtx.userId),
             await this.organizationRepo.getById(userCtx.organizationId)
@@ -30,7 +30,7 @@ export class InviteToOrganizationUseCase implements IInviteToOrganizationUseCase
             to: email,
             invitedByName: user.name,
             organizationName: organization.name,
-            hashedToken
+            rawToken
         })
 
         return dbRecord
