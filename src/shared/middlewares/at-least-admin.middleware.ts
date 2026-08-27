@@ -9,7 +9,7 @@ import { ErrorCode } from "../errors/error-codes"
  * This middleware must be used after `authMiddleware` and
  * `requireOrgMiddleware`, since it relies on `req.user`..
  */
-export const atLeastAdminMidlleware = (req: Request, _res: Response, next: NextFunction) => {
+export const atLeastAdminMiddleware = (req: Request, _res: Response, next: NextFunction) => {
     if (req.user.role === MembershipRoleEnum.MEMBER) {
         throw CustomError.forbidden("You can't perform this action", ErrorCode.INSUFFICIENT_ROLE)
     }
