@@ -1,5 +1,6 @@
 import { Invitation, PrismaClient } from "../../../generated/prisma/client";
 import { INVITATION_EXPIRATION_MS } from "../../../shared/config/constants";
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { MembershipRoleEnum } from "../../membership/domain/membership.entity";
@@ -64,9 +65,11 @@ export class InvitationDatasource implements IInvitationDatasource {
         }
     }
 
-    async update(invitation: InvitationEntity): Promise<InvitationEntity> {
+    async update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity> {
         try {
-            const updatedInvitation = await this.prisma.invitation.update({
+            const client = tx ?? this.prisma
+
+            const updatedInvitation = await client.invitation.update({
                 where: { id: invitation.id },
                 data: { ...invitation }
             })

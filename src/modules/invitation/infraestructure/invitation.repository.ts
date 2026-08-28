@@ -3,6 +3,7 @@ import { TokenUtil } from "../../../shared/utils/token.util";
 import { IInvitationDatasource } from "../domain/invitation.datasource.contract";
 import { IInvitationRepository } from "../domain/invitation.repository.contract";
 import { InvitationEntity } from "../domain/invitation.entity";
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 
 export class InvitationRepository implements IInvitationRepository {
 
@@ -27,8 +28,8 @@ export class InvitationRepository implements IInvitationRepository {
     listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         return this.InvitationDatasource.listByOrg(organizationId)
     }
-    update(invitation: InvitationEntity): Promise<InvitationEntity> {
-        return this.InvitationDatasource.update(invitation)
+    update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity> {
+        return this.InvitationDatasource.update(invitation, tx)
     }
 
 }
