@@ -4,7 +4,7 @@ import { authMiddleware } from "../../../shared/container/auth.container";
 import requireOrgMiddleware from "../../../shared/middlewares/require-org.middleware";
 import { atLeastAdminMiddleware } from "../../../shared/middlewares/at-least-admin.middleware";
 import validateBody from "../../../shared/middlewares/validate-body.middleware";
-import { inviteToOrganizationSchema } from "./invitation.schemas";
+import { inviteToOrganizationSchema, registerDataSchema } from "./invitation.schemas";
 
 
 export class InvitationRouter {
@@ -13,6 +13,7 @@ export class InvitationRouter {
         const router = Router()
 
         router.post('/', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware, validateBody(inviteToOrganizationSchema)], invitationController.invite)
+        router.post('/:token/accept', [validateBody(registerDataSchema)], invitationController.acceptInvitation)
 
         return router
     }
