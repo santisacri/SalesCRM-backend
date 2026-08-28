@@ -33,6 +33,7 @@ enum InvitationStatusEnum {
   ACCEPTED
   EXPIRED
   REVOKED
+  REJECTED
 }
 
 enum ContactSource {

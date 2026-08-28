@@ -5,7 +5,8 @@ export enum InvitationStatusEnum {
     PENDING = 'PENDING',
     ACCEPTED = 'ACCEPTED',
     EXPIRED = 'EXPIRED',
-    REVOKED = 'REVOKED'
+    REVOKED = 'REVOKED',
+    REJECTED = 'REJECTED'
 }
 
 interface IInvitationEntity {
