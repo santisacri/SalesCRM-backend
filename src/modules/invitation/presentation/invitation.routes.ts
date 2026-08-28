@@ -16,6 +16,7 @@ export class InvitationRouter {
         router.post('/token/:token/accept', [validateBody(registerDataSchema)], invitationController.acceptInvitation)
         router.post('/token/:token/reject', invitationController.rejectInvitationWithToken)
         router.post('/:invitationId/reject', [authMiddleware], invitationController.rejectInvitationWithId)
+        router.get('/', [authMiddleware], invitationController.rejectInvitationWithId)
 
         return router
     }

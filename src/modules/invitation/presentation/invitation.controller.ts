@@ -4,11 +4,13 @@ import { IInviteToOrganizationUseCase } from "../application/invite-to-organizat
 import getContext from "../../../shared/helpers/get-context"
 import { IAcceptInvitationUseCase } from "../application/accept-invitation.use-case"
 import { IRejectInvitationUseCase } from "../application/reject-invitation.use-case"
+import { IListInvitationsByUser } from "../application/list-invitations-by-user.use-case"
 
 type UseCases = {
-    invite: IInviteToOrganizationUseCase,
+    invite: IInviteToOrganizationUseCase
     acceptInvitation: IAcceptInvitationUseCase
     rejectInvitation: IRejectInvitationUseCase
+    listInvitationsByUser: IListInvitationsByUser
 }
 
 export class InvitationController {
@@ -61,6 +63,17 @@ export class InvitationController {
             const { email } = req.user.entity
 
             const rejectedInvitation = await this.useCases.rejectInvitation.execute({ invitationId, email })
+
+            res.status(201).json({ rejectedInvitation })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    listInvitationsByUser = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { email } = req.user.entity
+            const rejectedInvitation = await this.useCases.listInvitationsByUser.execute(email)
 
             res.status(201).json({ rejectedInvitation })
         } catch (error) {

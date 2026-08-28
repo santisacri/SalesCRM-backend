@@ -20,19 +20,27 @@ export class InvitationRepository implements IInvitationRepository {
 
         return { dbRecord, rawToken }
     }
+
     findByToken(token: string): Promise<InvitationEntity | null> {
         const hashedToken = TokenUtil.hash(token)
 
         return this.InvitationDatasource.findByToken(hashedToken)
     }
+
     findById(id: string): Promise<InvitationEntity | null> {
         return this.InvitationDatasource.findById(id)
     }
+
+    findByEmail(email: string): Promise<InvitationEntity[]> {
+        return this.InvitationDatasource.findByEmail(email)
+
+    }
+
     listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         return this.InvitationDatasource.listByOrg(organizationId)
     }
+
     update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity> {
         return this.InvitationDatasource.update(invitation, tx)
     }
-
 }

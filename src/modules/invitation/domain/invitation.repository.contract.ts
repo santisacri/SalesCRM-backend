@@ -6,6 +6,7 @@ export interface IInvitationRepository {
     create(email: string, invitedByCtx: OrgScopedCtx): Promise<{ dbRecord: InvitationEntity, rawToken: string }>
     findByToken(token: string): Promise<InvitationEntity | null>
     findById(id: string): Promise<InvitationEntity | null>
+    findByEmail(email: string): Promise<InvitationEntity[]>
     listByOrg(organizationId: string): Promise<InvitationEntity[]>
     update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity>
 }

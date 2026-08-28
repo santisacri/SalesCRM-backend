@@ -67,6 +67,18 @@ export class InvitationDatasource implements IInvitationDatasource {
         }
     }
 
+    async findByEmail(email: string): Promise<InvitationEntity[]> {
+        try {
+            const invitations = await this.prisma.invitation.findMany({
+                where: { email, status: "PENDING" }
+            })
+
+            return invitations.map(this.toEntity)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         try {
             const invitations = await this.prisma.invitation.findMany({
