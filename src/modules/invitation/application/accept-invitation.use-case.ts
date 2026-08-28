@@ -1,6 +1,7 @@
 import { ITransactionManager } from "../../../shared/database/transaction-manager";
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { ErrorCode } from "../../../shared/errors/error-codes";
+import { IHashService } from "../../../shared/services/hash.service";
 import { MembershipEntity } from "../../membership/domain/membership.entity";
 import { IMembershipRepository } from "../../membership/domain/membership.repository.contract";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
@@ -18,6 +19,7 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
         private readonly invitationRepo: IInvitationRepository,
         private readonly membershipRepo: IMembershipRepository,
         private readonly userRepo: IUserRepository,
+        private readonly hashService: IHashService,
         private readonly tx: ITransactionManager
     ) { }
 
@@ -41,9 +43,11 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
             let userId: string
 
             if (!existingUser && registrationData) {
+                const hashedPassword = this.hashService.hash(registrationData.password)
+
                 const newUser = await this.userRepo.create({
                     email: invitation.email,
-                    password: registrationData.password,
+                    password: hashedPassword,
                     name: registrationData.name
                 }, true, tx)
                 userId = newUser.id
