@@ -23,7 +23,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
 
         const passwordHash = this.hashService.hash(password)
 
-        const user = await this.userRepo.create({ password: passwordHash, ...rest })
+        const user = await this.userRepo.create({ password: passwordHash, ...rest }, false)
 
         const { rawToken } = await this.tokenRepo.createToken(TokenType.EMAIL_VERIFICATION, user.id)
 

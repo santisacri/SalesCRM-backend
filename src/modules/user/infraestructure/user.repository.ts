@@ -1,3 +1,4 @@
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import { RegisterUserInput } from "../../auth/presentation/auth.schemas";
 import { IUserDatasource } from "../domain/user.datasource.contract";
 import { UserEntity } from "../domain/user.entity";
@@ -22,8 +23,8 @@ export class UserRepository implements IUserRepository {
         return this.userDatasource.findByEmail(email)
     }
 
-    async create(data: RegisterUserInput): Promise<UserEntity> {
-        return this.userDatasource.create(data)
+    async create(data: RegisterUserInput, emailAlreadyValid: boolean, tx?: PrismaTransactionClient): Promise<UserEntity> {
+        return this.userDatasource.create(data, emailAlreadyValid, tx)
     }
 
 }

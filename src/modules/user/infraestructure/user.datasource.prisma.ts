@@ -3,6 +3,7 @@ import { IUserDatasource } from "../domain/user.datasource.contract";
 import { UserEntity } from "../domain/user.entity";
 import { PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 
 export class UserDatasource implements IUserDatasource {
 
@@ -11,10 +12,12 @@ export class UserDatasource implements IUserDatasource {
     ) { }
 
 
-    async create(data: RegisterUserInput): Promise<UserEntity> {
+    async create(data: RegisterUserInput, emailAlreadyValid: boolean, tx?: PrismaTransactionClient): Promise<UserEntity> {
         try {
-            const newUser = await this.prisma.user.create({
-                data: data
+            const client = tx ?? this.prisma
+
+            const newUser = await client.user.create({
+                data: {...data, emailVerified: emailAlreadyValid}
             })
 
             return UserEntity.fromObject(newUser)
