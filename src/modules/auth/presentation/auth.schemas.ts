@@ -1,6 +1,6 @@
 import z from "zod";
 
-const passwordValidation = z
+export const passwordValidation = z
     .string()
     .min(8, { error: 'Password must be at least 8 characters long' })
     .max(24, { error: 'Password must be at most 24 characters long' })
@@ -8,12 +8,13 @@ const passwordValidation = z
     .regex(/[a-z]/, { error: 'Password must contain at least one lowercase letter' })
     .regex(/[A-Z]/, { error: 'Password must contain at least one uppercase letter' });
 
-const nameValidation = z
+export const nameValidation = z
     .string()
     .trim()
     .min(2, { error: 'At least 2 characters long' })
     .max(50, { error: 'Max 50 characters long' })
     .regex(/^[\p{L}\s'-]+$/u, { error: 'Name cannot contain special characters' });
+    
 export const emailValidation = z.email({ error: 'invalid email' }).trim().toLowerCase()
 
 export const registerUserSchema = z.object({
