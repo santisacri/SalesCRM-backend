@@ -25,6 +25,9 @@ export class InvitationRepository implements IInvitationRepository {
 
         return this.InvitationDatasource.findByToken(hashedToken)
     }
+    findById(id: string): Promise<InvitationEntity | null> {
+        return this.InvitationDatasource.findById(id)
+    }
     listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         return this.InvitationDatasource.listByOrg(organizationId)
     }

@@ -13,7 +13,9 @@ export class InvitationRouter {
         const router = Router()
 
         router.post('/', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware, validateBody(inviteToOrganizationSchema)], invitationController.invite)
-        router.post('/:token/accept', [validateBody(registerDataSchema)], invitationController.acceptInvitation)
+        router.post('/token/:token/accept', [validateBody(registerDataSchema)], invitationController.acceptInvitation)
+        router.post('/token/:token/reject', invitationController.rejectInvitationWithToken)
+        router.post('/:invitationId/reject', [authMiddleware], invitationController.rejectInvitationWithId)
 
         return router
     }

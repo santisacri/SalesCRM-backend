@@ -53,6 +53,20 @@ export class InvitationDatasource implements IInvitationDatasource {
         }
     }
 
+    async findById(id: string): Promise<InvitationEntity | null> {
+        try {
+            const invitation = await this.prisma.invitation.findUnique({
+                where: { id }
+            })
+
+            if (!invitation) return null;
+
+            return this.toEntity(invitation)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async listByOrg(organizationId: string): Promise<InvitationEntity[]> {
         try {
             const invitations = await this.prisma.invitation.findMany({
