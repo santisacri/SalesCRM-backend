@@ -7,9 +7,9 @@ import { ErrorCode } from "../errors/error-codes"
 
 const jwtPayloadSchema = z.object({
     sub: z.uuid({ version: "v7" }),
-    organizationId: z.uuid({ version: "v7" }).optional(),
-    role: z.enum(MembershipRoleEnum).optional(),
-    teamId: z.uuid({ version: "v7" }).optional(),
+    organizationId: z.uuid({ version: "v7" }).optional().nullable(),
+    role: z.enum(MembershipRoleEnum).optional().nullable(),
+    teamId: z.uuid({ version: "v7" }).optional().nullable(),
     iat: z.number(),
     exp: z.number(),
     aud: z.string(),
