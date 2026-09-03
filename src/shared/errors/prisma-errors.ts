@@ -1,13 +1,14 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { CustomError } from "./custom-errors";
 import envs from "../config/envs";
+import { ErrorCode } from "./error-codes";
 
 export default function handlePrismaError(error: unknown): never {
     if (error instanceof PrismaClientKnownRequestError) {
         !envs.IN_PRODUCTION && console.log(error.message)
         switch (error.code) {
             case 'P2002': {
-                throw CustomError.badRequest(`Already exist a record with that value`, 'USER_ALREADY_MEMBER');
+                throw CustomError.badRequest(`Already exist a record with that value`, ErrorCode.EMAIL_ALREADY_EXISTS);
             }
             case 'P2025':
                 throw CustomError.notFound('Record not found');
