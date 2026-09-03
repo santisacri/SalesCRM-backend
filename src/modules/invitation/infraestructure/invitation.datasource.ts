@@ -4,7 +4,7 @@ import { PrismaTransactionClient } from "../../../shared/database/transaction-ma
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { MembershipRoleEnum } from "../../membership/domain/membership.entity";
-import { IInvitationDatasource } from "../domain/invitation.datasource.contract";
+import { IInvitationDatasource, InvitationWithInviter } from "../domain/invitation.datasource.contract";
 import { InvitationEntity, InvitationStatusEnum } from "../domain/invitation.entity";
 
 
@@ -79,13 +79,21 @@ export class InvitationDatasource implements IInvitationDatasource {
         }
     }
 
-    async listByOrg(organizationId: string): Promise<InvitationEntity[]> {
+    async listByOrg(organizationId: string): Promise<InvitationWithInviter[]> {
         try {
             const invitations = await this.prisma.invitation.findMany({
-                where: { organizationId }
+                where: { organizationId },
+                include: {
+                    invitedBy: {
+                        select: { name: true }
+                    }
+                }
             })
 
-            return invitations.map(this.toEntity)
+            return invitations.map(inv => ({
+                invitation: this.toEntity(inv),
+                invitedByName: inv.invitedBy ? inv.invitedBy.name : '---'
+            }))
         } catch (error) {
             handlePrismaError(error)
         }

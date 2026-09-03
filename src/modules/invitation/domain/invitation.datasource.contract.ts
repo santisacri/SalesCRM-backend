@@ -2,11 +2,16 @@ import { PrismaTransactionClient } from "../../../shared/database/transaction-ma
 import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { InvitationEntity } from "./invitation.entity";
 
+export interface InvitationWithInviter {
+    invitation: InvitationEntity
+    invitedByName: string
+}
+
 export interface IInvitationDatasource {
     create(email: string, token: string, invitedByCtx: OrgScopedCtx): Promise<InvitationEntity>
     findByToken(token: string): Promise<InvitationEntity | null>
     findById(id: string): Promise<InvitationEntity | null>
     findByEmail(email: string): Promise<InvitationEntity[]>
-    listByOrg(organizationId: string): Promise<InvitationEntity[]>
+    listByOrg(organizationId: string): Promise<InvitationWithInviter[]>
     update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity>
 }
