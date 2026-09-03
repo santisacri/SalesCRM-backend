@@ -53,10 +53,10 @@ export class InvitationDatasource implements IInvitationDatasource {
         }
     }
 
-    async findById(id: string): Promise<InvitationEntity | null> {
+    async findById(id: string, organizationId: string): Promise<InvitationEntity | null> {
         try {
             const invitation = await this.prisma.invitation.findUnique({
-                where: { id }
+                where: { id, organizationId }
             })
 
             if (!invitation) return null;

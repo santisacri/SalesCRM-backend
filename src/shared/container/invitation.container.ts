@@ -3,6 +3,7 @@ import { InviteToOrganizationUseCase } from "../../modules/invitation/applicatio
 import { ListInvitationsByOrgUseCase } from "../../modules/invitation/application/list-invitations-by-org.use-case";
 import { ListInvitationsByUser } from "../../modules/invitation/application/list-invitations-by-user.use-case";
 import { RejectInvitationUseCase } from "../../modules/invitation/application/reject-invitation.use-case";
+import { RevokeInvitationUseCase } from "../../modules/invitation/application/revoke-invitation.use-case";
 import { InvitationController } from "../../modules/invitation/presentation/invitation.controller";
 import { mailQueueService } from "./queue.container";
 import { invitationRepository, membershipRepository, organizationRepository, userRepository } from "./repositories.container";
@@ -14,11 +15,13 @@ const acceptInvitation = new AcceptInvitationUseCase(invitationRepository, membe
 const rejectInvitation = new RejectInvitationUseCase(invitationRepository)
 const listInvitationsByUser = new ListInvitationsByUser(invitationRepository)
 const listInvitationsByOrg = new ListInvitationsByOrgUseCase(invitationRepository)
+const revokeInvitation = new RevokeInvitationUseCase(invitationRepository)
 
 export const invitationController = new InvitationController({
     invite,
     acceptInvitation,
     rejectInvitation,
     listInvitationsByUser,
-    listInvitationsByOrg
+    listInvitationsByOrg,
+    revokeInvitation
 })

@@ -1,6 +1,6 @@
 import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { TokenUtil } from "../../../shared/utils/token.util";
-import { IInvitationDatasource } from "../domain/invitation.datasource.contract";
+import { IInvitationDatasource, InvitationWithInviter } from "../domain/invitation.datasource.contract";
 import { IInvitationRepository } from "../domain/invitation.repository.contract";
 import { InvitationEntity } from "../domain/invitation.entity";
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
@@ -27,8 +27,8 @@ export class InvitationRepository implements IInvitationRepository {
         return this.InvitationDatasource.findByToken(hashedToken)
     }
 
-    findById(id: string): Promise<InvitationEntity | null> {
-        return this.InvitationDatasource.findById(id)
+    findById(id: string, organizationId: string): Promise<InvitationEntity | null> {
+        return this.InvitationDatasource.findById(id, organizationId)
     }
 
     findByEmail(email: string): Promise<InvitationEntity[]> {
@@ -36,7 +36,7 @@ export class InvitationRepository implements IInvitationRepository {
 
     }
 
-    listByOrg(organizationId: string): Promise<InvitationEntity[]> {
+    listByOrg(organizationId: string): Promise<InvitationWithInviter[]> {
         return this.InvitationDatasource.listByOrg(organizationId)
     }
 

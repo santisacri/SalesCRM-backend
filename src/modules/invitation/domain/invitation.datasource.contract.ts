@@ -10,7 +10,7 @@ export interface InvitationWithInviter {
 export interface IInvitationDatasource {
     create(email: string, token: string, invitedByCtx: OrgScopedCtx): Promise<InvitationEntity>
     findByToken(token: string): Promise<InvitationEntity | null>
-    findById(id: string): Promise<InvitationEntity | null>
+    findById(id: string, organizationId: string): Promise<InvitationEntity | null>
     findByEmail(email: string): Promise<InvitationEntity[]>
     listByOrg(organizationId: string): Promise<InvitationWithInviter[]>
     update(invitation: InvitationEntity, tx?: PrismaTransactionClient): Promise<InvitationEntity>

@@ -6,6 +6,7 @@ import { IAcceptInvitationUseCase } from "../application/accept-invitation.use-c
 import { IRejectInvitationUseCase } from "../application/reject-invitation.use-case"
 import { IListInvitationsByUserUseCase } from "../application/list-invitations-by-user.use-case"
 import { IListInvitationsByOrgUseCase } from "../application/list-invitations-by-org.use-case"
+import { IRevokeInvitationUseCase } from "../application/revoke-invitation.use-case"
 
 type UseCases = {
     invite: IInviteToOrganizationUseCase
@@ -13,6 +14,7 @@ type UseCases = {
     rejectInvitation: IRejectInvitationUseCase
     listInvitationsByUser: IListInvitationsByUserUseCase
     listInvitationsByOrg: IListInvitationsByOrgUseCase
+    revokeInvitation: IRevokeInvitationUseCase
 }
 
 export class InvitationController {
@@ -90,6 +92,18 @@ export class InvitationController {
             const invitations = await this.useCases.listInvitationsByOrg.execute(organizationId)
 
             res.status(200).json({ invitations })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    revokeInvitation = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const ctx = getContext(req)
+            const invitationId = req.params.invitationId as string
+            const invitation = await this.useCases.revokeInvitation.execute(invitationId, ctx)
+
+            res.status(200).json({ invitation })
         } catch (error) {
             next(error)
         }
