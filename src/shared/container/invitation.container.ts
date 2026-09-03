@@ -1,5 +1,6 @@
 import { AcceptInvitationUseCase } from "../../modules/invitation/application/accept-invitation.use-case";
 import { InviteToOrganizationUseCase } from "../../modules/invitation/application/invite-to-organization.use-case";
+import { ListInvitationsByOrgUseCase } from "../../modules/invitation/application/list-invitations-by-org.use-case";
 import { ListInvitationsByUser } from "../../modules/invitation/application/list-invitations-by-user.use-case";
 import { RejectInvitationUseCase } from "../../modules/invitation/application/reject-invitation.use-case";
 import { InvitationController } from "../../modules/invitation/presentation/invitation.controller";
@@ -12,10 +13,12 @@ const invite = new InviteToOrganizationUseCase(invitationRepository, userReposit
 const acceptInvitation = new AcceptInvitationUseCase(invitationRepository, membershipRepository, userRepository, hashService, transactionManager)
 const rejectInvitation = new RejectInvitationUseCase(invitationRepository)
 const listInvitationsByUser = new ListInvitationsByUser(invitationRepository)
+const listInvitationsByOrg = new ListInvitationsByOrgUseCase(invitationRepository)
 
 export const invitationController = new InvitationController({
     invite,
     acceptInvitation,
     rejectInvitation,
-    listInvitationsByUser
+    listInvitationsByUser,
+    listInvitationsByOrg
 })

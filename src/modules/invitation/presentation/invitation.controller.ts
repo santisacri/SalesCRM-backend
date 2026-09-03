@@ -4,13 +4,15 @@ import { IInviteToOrganizationUseCase } from "../application/invite-to-organizat
 import getContext from "../../../shared/helpers/get-context"
 import { IAcceptInvitationUseCase } from "../application/accept-invitation.use-case"
 import { IRejectInvitationUseCase } from "../application/reject-invitation.use-case"
-import { IListInvitationsByUser } from "../application/list-invitations-by-user.use-case"
+import { IListInvitationsByUserUseCase } from "../application/list-invitations-by-user.use-case"
+import { IListInvitationsByOrgUseCase } from "../application/list-invitations-by-org.use-case"
 
 type UseCases = {
     invite: IInviteToOrganizationUseCase
     acceptInvitation: IAcceptInvitationUseCase
     rejectInvitation: IRejectInvitationUseCase
-    listInvitationsByUser: IListInvitationsByUser
+    listInvitationsByUser: IListInvitationsByUserUseCase
+    listInvitationsByOrg: IListInvitationsByOrgUseCase
 }
 
 export class InvitationController {
@@ -22,9 +24,10 @@ export class InvitationController {
     invite = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email } = req.body as InviteToOrganizationInput
+            const user = req.user.entity
             const ctx = getContext(req)
 
-            const invitation = await this.useCases.invite.execute(email, ctx)
+            const invitation = await this.useCases.invite.execute(email, ctx, user)
 
             res.status(201).json({ invitation })
         } catch (error) {
@@ -73,9 +76,20 @@ export class InvitationController {
     listInvitationsByUser = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email } = req.user.entity
-            const rejectedInvitation = await this.useCases.listInvitationsByUser.execute(email)
+            const invitations = await this.useCases.listInvitationsByUser.execute(email)
 
-            res.status(201).json({ rejectedInvitation })
+            res.status(200).json({ invitations })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    listInvitationsByOrg = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { organizationId } = getContext(req)
+            const invitations = await this.useCases.listInvitationsByOrg.execute(organizationId)
+
+            res.status(200).json({ invitations })
         } catch (error) {
             next(error)
         }

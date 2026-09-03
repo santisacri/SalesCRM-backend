@@ -5,6 +5,7 @@ import requireOrgMiddleware from "../../../shared/middlewares/require-org.middle
 import { atLeastAdminMiddleware } from "../../../shared/middlewares/at-least-admin.middleware";
 import validateBody from "../../../shared/middlewares/validate-body.middleware";
 import { inviteToOrganizationSchema, registerDataSchema } from "./invitation.schemas";
+import onlyOwnerMiddleware from "../../../shared/middlewares/only-owner.middleware";
 
 
 export class InvitationRouter {
@@ -17,6 +18,7 @@ export class InvitationRouter {
         router.post('/token/:token/reject', invitationController.rejectInvitationWithToken)
         router.post('/:invitationId/reject', [authMiddleware], invitationController.rejectInvitationWithId)
         router.get('/me', [authMiddleware], invitationController.listInvitationsByUser)
+        router.get('/org', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware], invitationController.listInvitationsByOrg)
 
         return router
     }

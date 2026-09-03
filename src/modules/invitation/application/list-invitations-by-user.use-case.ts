@@ -1,11 +1,11 @@
 import { InvitationEntity } from "../domain/invitation.entity";
 import { IInvitationRepository } from "../domain/invitation.repository.contract";
 
-export interface IListInvitationsByUser {
+export interface IListInvitationsByUserUseCase {
     execute(email: string): Promise<InvitationEntity[]>
 }
 
-export class ListInvitationsByUser implements IListInvitationsByUser {
+export class ListInvitationsByUser implements IListInvitationsByUserUseCase {
 
     constructor(
         private readonly invitationRepo: IInvitationRepository

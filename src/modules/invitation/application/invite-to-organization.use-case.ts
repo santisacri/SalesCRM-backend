@@ -4,9 +4,12 @@ import { IOrganizationRepository } from "../../organization/domain/organization.
 import { IUserRepository } from "../../user/domain/user.repository.contract";
 import { IInvitationRepository } from "../domain/invitation.repository.contract";
 import { InvitationEntity } from "../domain/invitation.entity";
+import { IUserEntity } from "../../user/domain/user.entity";
+import { CustomError } from "../../../shared/errors/custom-errors";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 
 export interface IInviteToOrganizationUseCase {
-    execute(email: string, userCtx: OrgScopedCtx): Promise<InvitationEntity>
+    execute(email: string, userCtx: OrgScopedCtx, authUser: IUserEntity): Promise<InvitationEntity>
 }
 
 export class InviteToOrganizationUseCase implements IInviteToOrganizationUseCase {
@@ -18,7 +21,11 @@ export class InviteToOrganizationUseCase implements IInviteToOrganizationUseCase
         private readonly mailQueue: IMailQueueService
     ) { }
 
-    async execute(email: string, userCtx: OrgScopedCtx): Promise<InvitationEntity> {
+    async execute(email: string, userCtx: OrgScopedCtx, authUser: IUserEntity): Promise<InvitationEntity> {
+
+        if(email === authUser.email) {
+            throw CustomError.badRequest('You cant invite yourself', ErrorCode.BAD_REQUEST)
+        }
 
         const [{ dbRecord, rawToken }, user, organization] = await Promise.all([
             await this.invitationRepo.create(email, userCtx),
