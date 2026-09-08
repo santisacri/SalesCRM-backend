@@ -1,7 +1,7 @@
 import { Membership, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
-import { IMembershipDatasource } from "../domain/membership.datasource.contract";
+import { IMembershipDatasource, MembershipWithUser } from "../domain/membership.datasource.contract";
 import { MembershipEntity, MembershipRoleEnum, MembershipStatusEnum } from "../domain/membership.entity";
 import { CreateMembershipInput } from "../presentation/membership.schemas";
 
@@ -41,6 +41,30 @@ export class MembershipDatasource implements IMembershipDatasource {
             })
 
             return memberships.map(this.toEntity)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]> {
+        try {
+            const memberships = await this.prisma.membership.findMany({
+                where: { organizationId, status },
+                include: {
+                    user: { select: { name: true, email: true } }
+                },
+                orderBy: { createdAt: "desc" }
+            })
+
+            return memberships.map((membership) => {
+                return {
+                    membership: this.toEntity(membership),
+                    user: {
+                        name: membership.user.name,
+                        email: membership.user.email
+                    }
+                }
+            })
         } catch (error) {
             handlePrismaError(error)
         }

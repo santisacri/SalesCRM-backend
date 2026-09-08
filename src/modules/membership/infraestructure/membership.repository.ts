@@ -1,5 +1,5 @@
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
-import { IMembershipDatasource } from "../domain/membership.datasource.contract";
+import { IMembershipDatasource, MembershipWithUser } from "../domain/membership.datasource.contract";
 import { MembershipEntity, MembershipStatusEnum } from "../domain/membership.entity";
 import { IMembershipRepository } from "../domain/membership.repository.contract";
 import { CreateMembershipInput } from "../presentation/membership.schemas";
@@ -10,6 +10,10 @@ export class MembershipRepository implements IMembershipRepository {
     constructor(
         private readonly membershipDatasource: IMembershipDatasource
     ) { }
+
+    findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]> {
+        return this.membershipDatasource.findManyByOrg(organizationId, status)
+    }
 
     findActive(userId: string, organizationId: string): Promise<MembershipEntity | null> {
         return this.membershipDatasource.findActive(userId, organizationId)
