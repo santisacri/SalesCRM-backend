@@ -87,7 +87,8 @@ export class InvitationDatasource implements IInvitationDatasource {
                     invitedBy: {
                         select: { name: true }
                     }
-                }
+                },
+                orderBy: { expiresAt: "desc" }
             })
 
             return invitations.map(inv => ({
