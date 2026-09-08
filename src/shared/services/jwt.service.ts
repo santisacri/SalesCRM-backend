@@ -59,7 +59,7 @@ export class JWTService implements IJWTService {
         } catch (error) {
 
             if (error instanceof jwt.TokenExpiredError) {
-                throw CustomError.unauthorized('Expired token')
+                throw CustomError.unauthorized('Expired token', ErrorCode.JWT_EXPIRED)
             }
 
             if (error instanceof jwt.JsonWebTokenError) {
