@@ -4,6 +4,7 @@ import { OrganizationRouter } from "./modules/organization/presentation/organiza
 import { ContactRouter } from "./modules/contact/presentation/contact.routes";
 import { TeamRouter } from "./modules/team/presentation/team.routes";
 import { InvitationRouter } from "./modules/invitation/presentation/invitation.routes";
+import { MembershipRouter } from "./modules/membership/presentation/membership.routes";
 
 
 export class AppRouter {
@@ -15,6 +16,7 @@ export class AppRouter {
         router.use('/api/contact', ContactRouter.routes)
         router.use('/api/team', TeamRouter.routes)
         router.use('/api/invitations', InvitationRouter.routes)
+        router.use('/api/memberships', MembershipRouter.routes)
 
         return router
     }
