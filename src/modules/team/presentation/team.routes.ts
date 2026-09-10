@@ -13,8 +13,7 @@ export class TeamRouter {
         const router = Router()
 
         router.post('/', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware, validateBody(createTeamSchema)], teamController.createTeam)
-        // router.get('/')
-        // router.put('/')
+        router.get('/', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware], teamController.listOrganizationTeams)
 
 
         return router
