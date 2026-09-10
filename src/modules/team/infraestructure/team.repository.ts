@@ -9,6 +9,9 @@ export class TeamRepository implements ITeamRepository {
         private readonly teamDatasource: ITeamDatasource
     ) { }
 
+    getById(teamId: string, organizationId: string): Promise<TeamEntity> {
+        return this.teamDatasource.getById(teamId, organizationId)
+    }
     create(name: string, adminId: string, organizationId: string): Promise<TeamEntity> {
         return this.teamDatasource.create(name, adminId, organizationId)
     }

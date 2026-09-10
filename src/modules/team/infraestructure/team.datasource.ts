@@ -22,6 +22,18 @@ export class TeamDatasource implements ITeamDatasource {
         }
     }
 
+    async getById(teamId: string, organizationId: string): Promise<TeamEntity> {
+        try {
+            const team = await this.prisma.team.findUniqueOrThrow({
+                where: { id: teamId, organizationId }
+            })
+
+            return team
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async listByOrg(organizationId: string): Promise<TeamEntity[]> {
         try {
             const teams = await this.prisma.team.findMany({
