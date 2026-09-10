@@ -70,6 +70,19 @@ export class MembershipDatasource implements IMembershipDatasource {
         }
     }
 
+    async update(membership: MembershipEntity): Promise<MembershipEntity> {
+        try {
+            const record = await this.prisma.membership.update({
+                where: { id: membership.id },
+                data: { ...membership }
+            })
+
+            return this.toEntity(record)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async create(data: CreateMembershipInput, organizationId: string, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
         try {
             const client = tx ?? this.prisma

@@ -11,6 +11,11 @@ export class MembershipRepository implements IMembershipRepository {
         private readonly membershipDatasource: IMembershipDatasource
     ) { }
 
+    update(membership: MembershipEntity): Promise<MembershipEntity> {
+        return this.membershipDatasource.update(membership)
+
+    }
+
     findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]> {
         return this.membershipDatasource.findManyByOrg(organizationId, status)
     }

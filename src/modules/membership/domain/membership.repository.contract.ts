@@ -8,4 +8,5 @@ export interface IMembershipRepository {
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]>
     findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]>
     findActive(userId: string, organizationId: string): Promise<MembershipEntity | null>
+    update(membership: MembershipEntity): Promise<MembershipEntity>
 }
