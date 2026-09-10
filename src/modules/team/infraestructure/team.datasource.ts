@@ -1,5 +1,6 @@
 import { PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
+import { UserEntity } from "../../user/domain/user.entity";
 import { ITeamDatasource } from "../domain/team.datasource.contract";
 import { TeamEntity } from "../domain/team.entity";
 
@@ -34,13 +35,21 @@ export class TeamDatasource implements ITeamDatasource {
         }
     }
 
-    async listByOrg(organizationId: string): Promise<TeamEntity[]> {
+    async listByOrgWithAdmin(organizationId: string): Promise<{ team: TeamEntity, admin: UserEntity }[]> {
         try {
             const teams = await this.prisma.team.findMany({
-                where: { organizationId }
+                where: { organizationId },
+                include: {
+                    admin: true
+                }
             })
 
-            return teams.map(TeamEntity.fromObject)
+            return teams.map((team) => {
+                return {
+                    team: TeamEntity.fromObject(team),
+                    admin: UserEntity.fromObject(team.admin)
+                }
+            })
         } catch (error) {
             handlePrismaError(error)
         }
