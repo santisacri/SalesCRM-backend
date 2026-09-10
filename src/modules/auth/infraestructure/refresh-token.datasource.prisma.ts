@@ -11,12 +11,22 @@ export class RefreshTokenDatasource implements IRefreshTokenDatasource {
         private readonly prisma: PrismaClient
     ) { }
 
-
     async updateOrganization(token: string, organizationId: string): Promise<void> {
         try {
             await this.prisma.refreshToken.update({
                 where: { token },
                 data: { organizationId }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
+    async revokeByUserIdAndOrgId(userId: string, organizationId: string): Promise<void> {
+        try {
+            await this.prisma.refreshToken.updateMany({
+                where: { userId, organizationId },
+                data: { revoked: true }
             })
         } catch (error) {
             handlePrismaError(error)

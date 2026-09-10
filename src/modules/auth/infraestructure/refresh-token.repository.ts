@@ -10,6 +10,9 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
         private readonly refreshTokenDatasource: IRefreshTokenDatasource
     ) { }
 
+    revokeByUserIdAndOrgId(userId: string, organizationId: string): Promise<void> {
+        return this.refreshTokenDatasource.revokeByUserIdAndOrgId(userId, organizationId)
+    }
 
     async updateOrganization(rawToken: string, organizationId: string): Promise<void> {
         const hashedToken = TokenUtil.hash(rawToken)

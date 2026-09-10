@@ -6,5 +6,6 @@ export interface IRefreshTokenDatasource {
     revokeById(id: string): Promise<void>
     revokeFamily(family: string): Promise<void>
     revokeByUserId(userId: string): Promise<void>
+    revokeByUserIdAndOrgId(userId: string, organizationId: string): Promise<void>
     updateOrganization(token: string, organizationId: string): Promise<void>
 }
