@@ -3,12 +3,20 @@ import { CustomError } from "./custom-errors";
 import envs from "../config/envs";
 import { ErrorCode } from "./error-codes";
 
-export default function handlePrismaError(error: unknown): never {
+export default function handlePrismaError(error: unknown, code?: ErrorCode): never {
     if (error instanceof PrismaClientKnownRequestError) {
         !envs.IN_PRODUCTION && console.log(error.message)
         switch (error.code) {
             case 'P2002': {
-                throw CustomError.badRequest(`Already exist a record with that value`, ErrorCode.EMAIL_ALREADY_EXISTS);
+                if (code && code === "USER_ALREADY_ADMIN") {
+                    throw CustomError.badRequest(`This user already leads a team`, ErrorCode.USER_ALREADY_ADMIN);
+                }
+
+                if (code && code === "EMAIL_ALREADY_EXISTS") {
+                    throw CustomError.badRequest(`This user already leads a team`, ErrorCode.EMAIL_ALREADY_EXISTS);
+                }
+
+                throw CustomError.badRequest(`Already exist a record with that value`, ErrorCode.UNIQUE_CONSTRAINT_VIOLATION);
             }
             case 'P2025':
                 throw CustomError.notFound('Record not found');

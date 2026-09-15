@@ -1,4 +1,5 @@
 import { PrismaClient } from "../../../generated/prisma/client";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { UserEntity } from "../../user/domain/user.entity";
 import { ITeamDatasource } from "../domain/team.datasource.contract";
@@ -19,7 +20,7 @@ export class TeamDatasource implements ITeamDatasource {
 
             return TeamEntity.fromObject(team)
         } catch (error) {
-            handlePrismaError(error)
+            handlePrismaError(error, ErrorCode.USER_ALREADY_ADMIN)
         }
     }
 

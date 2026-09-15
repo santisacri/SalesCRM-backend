@@ -4,6 +4,7 @@ import { UserEntity } from "../domain/user.entity";
 import { PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
+import { ErrorCode } from "../../../shared/errors/error-codes";
 
 export class UserDatasource implements IUserDatasource {
 
@@ -17,12 +18,12 @@ export class UserDatasource implements IUserDatasource {
             const client = tx ?? this.prisma
 
             const newUser = await client.user.create({
-                data: {...data, emailVerified: emailAlreadyValid}
+                data: { ...data, emailVerified: emailAlreadyValid }
             })
 
             return UserEntity.fromObject(newUser)
         } catch (error) {
-            handlePrismaError(error)
+            handlePrismaError(error, ErrorCode.EMAIL_ALREADY_EXISTS)
         }
     }
 
