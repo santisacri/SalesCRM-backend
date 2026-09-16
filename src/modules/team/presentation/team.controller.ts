@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import getContext from "../../../shared/helpers/get-context"
 import { ICreateTeamUseCase } from "../application/create-team.use-case"
 import { IListOrganizationTeamsUseCase } from "../application/list-organization-teams.use-case"
-import { UserEntity } from "../../user/domain/user.entity"
+
 
 type UseCases = {
     createTeam: ICreateTeamUseCase
@@ -33,16 +33,9 @@ export class TeamController {
         try {
             const { organizationId } = getContext(req)
 
-            const teamsRecords = await this.useCases.listOrganizationTeams.execute(organizationId)
+            const teams = await this.useCases.listOrganizationTeams.execute(organizationId)
 
-            const teams = teamsRecords.map(({ admin, team }) => {
-                return {
-                    team,
-                    admin: UserEntity.toDto(admin)
-                }
-            })
-
-            res.status(201).json({ teams })
+            res.status(200).json({ teams })
         } catch (error) {
             next(error)
         }
