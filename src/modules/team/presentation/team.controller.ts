@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express"
 import getContext from "../../../shared/helpers/get-context"
 import { ICreateTeamUseCase } from "../application/create-team.use-case"
 import { IListOrganizationTeamsUseCase } from "../application/list-organization-teams.use-case"
+import { IDeleteTeamUseCase } from "../application/delete-team.use-case"
 
 
 type UseCases = {
     createTeam: ICreateTeamUseCase
     listOrganizationTeams: IListOrganizationTeamsUseCase
+    deleteTeam: IDeleteTeamUseCase
 }
 
 export class TeamController {
@@ -36,6 +38,19 @@ export class TeamController {
             const teams = await this.useCases.listOrganizationTeams.execute(organizationId)
 
             res.status(200).json({ teams })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteTeam = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { organizationId } = getContext(req)
+            const teamId = req.params.teamId as string
+
+            const team = await this.useCases.deleteTeam.execute(teamId, organizationId)
+
+            res.status(200).json({ team })
         } catch (error) {
             next(error)
         }

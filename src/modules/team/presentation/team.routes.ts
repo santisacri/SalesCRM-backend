@@ -14,6 +14,7 @@ export class TeamRouter {
 
         router.post('/', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware, validateBody(createTeamSchema)], teamController.createTeam)
         router.get('/', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware], teamController.listOrganizationTeams)
+        router.delete('/:teamId', [authMiddleware, requireOrgMiddleware, onlyOwnerMiddleware], teamController.deleteTeam)
 
 
         return router
