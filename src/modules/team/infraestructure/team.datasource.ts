@@ -74,7 +74,7 @@ export class TeamDatasource implements ITeamDatasource {
     async listByOrgWithSummary(organizationId: string): Promise<ITeamSummary[]> {
         try {
             const teams = await this.prisma.team.findMany({
-                where: { organizationId },
+                where: { organizationId, deletedAt: null },
                 include: this.teamSummaryInclude()
             })
 
