@@ -11,9 +11,8 @@ export class MembershipRepository implements IMembershipRepository {
         private readonly membershipDatasource: IMembershipDatasource
     ) { }
 
-    update(membership: MembershipEntity): Promise<MembershipEntity> {
-        return this.membershipDatasource.update(membership)
-
+    update(membership: MembershipEntity, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
+        return this.membershipDatasource.update(membership, tx)
     }
 
     findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]> {
