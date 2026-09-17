@@ -15,7 +15,7 @@ export interface IMembershipDatasource {
     create(data: CreateMembershipInput, organizationId: string, tx?: PrismaTransactionClient): Promise<MembershipEntity>
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]>
     findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]>
-    findById(membershipId: string, organizationId: string): Promise<MembershipEntity>
+    findById(membershipId: string, organizationId: string): Promise<MembershipEntity | null>
     findManyByTeam(organizationId: string, teamId: string): Promise<MembershipWithUser[]>
     findActive(userId: string, organizationId: string): Promise<MembershipEntity | null>
     update(membership: MembershipEntity, tx?: PrismaTransactionClient): Promise<MembershipEntity>

@@ -46,6 +46,20 @@ export class MembershipDatasource implements IMembershipDatasource {
         }
     }
 
+    async findById(membershipId: string, organizationId: string): Promise<MembershipEntity | null> {
+        try {
+            const membership = await this.prisma.membership.findUnique({
+                where: { id: membershipId, organizationId }
+            })
+
+            if (!membership) return null;
+
+            return this.toEntity(membership)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]> {
         try {
             const memberships = await this.prisma.membership.findMany({

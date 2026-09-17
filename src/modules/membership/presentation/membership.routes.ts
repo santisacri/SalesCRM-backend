@@ -12,6 +12,7 @@ export class MembershipRouter {
 
         router.get('/', [authMiddleware, requireOrgMiddleware], membershipController.getOrganizationMembers)
         router.patch('/:memberId', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.kickMember)
+        router.patch('/:membershipId/assign-team/:teamId', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.kickMember)
 
         return router
     }

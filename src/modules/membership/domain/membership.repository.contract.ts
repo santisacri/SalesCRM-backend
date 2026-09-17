@@ -8,6 +8,7 @@ export interface IMembershipRepository {
     findManyByUserId(userId: string, status: MembershipStatusEnum): Promise<MembershipEntity[]>
     findManyByOrg(organizationId: string, status: MembershipStatusEnum): Promise<MembershipWithUser[]>
     findManyByTeam(organizationId: string, teamId: string): Promise<MembershipWithUser[]>
+    findById(membershipId: string, organizationId: string): Promise<MembershipEntity | null>
     findActive(userId: string, organizationId: string): Promise<MembershipEntity | null>
     update(membership: MembershipEntity, tx?: PrismaTransactionClient): Promise<MembershipEntity>
 }
