@@ -70,6 +70,30 @@ export class MembershipDatasource implements IMembershipDatasource {
         }
     }
 
+    async findManyByTeam(organizationId: string, teamId: string): Promise<MembershipWithUser[]> {
+        try {
+            const memberships = await this.prisma.membership.findMany({
+                where: { organizationId, teamId, status: "ACTIVE" },
+                include: {
+                    user: { select: { name: true, email: true } }
+                },
+                orderBy: { createdAt: "desc" }
+            })
+
+            return memberships.map((membership) => {
+                return {
+                    membership: this.toEntity(membership),
+                    user: {
+                        name: membership.user.name,
+                        email: membership.user.email
+                    }
+                }
+            })
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async update(membership: MembershipEntity, tx?: PrismaTransactionClient): Promise<MembershipEntity> {
         try {
             const client = tx ?? this.prisma
