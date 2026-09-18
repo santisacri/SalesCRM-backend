@@ -113,7 +113,7 @@ export class MembershipDatasource implements IMembershipDatasource {
             const client = tx ?? this.prisma
             const record = await client.membership.update({
                 where: { id: membership.id },
-                data: { ...membership }
+                data: { ...membership, updatedAt: new Date() }
             })
 
             return this.toEntity(record)

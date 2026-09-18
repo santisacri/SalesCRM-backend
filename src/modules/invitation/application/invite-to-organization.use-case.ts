@@ -33,6 +33,8 @@ export class InviteToOrganizationUseCase implements IInviteToOrganizationUseCase
             await this.organizationRepo.getById(userCtx.organizationId)
         ])
 
+        console.log(rawToken)
+
         await this.mailQueue.enqueue("send-invitation-email", {
             to: email,
             invitedByName: user.name,

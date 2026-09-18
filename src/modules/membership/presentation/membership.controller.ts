@@ -1,14 +1,16 @@
 import { NextFunction, Request, Response } from "express"
 import { IGetOrganizationMembersUseCase } from "../application/get-organization-members.use-case"
 import getContext from "../../../shared/helpers/get-context"
-import { StatusQueryParamSchema } from "./membership.schemas"
+import { ChangeAdminInput, StatusQueryParamSchema } from "./membership.schemas"
 import { IKickMemberUseCase } from "../application/kick-member.use-case"
 import { IAssignMemberToTeamUseCase } from "../application/assign-member-to-team.use-case"
+import { IChangeAdminUseCase } from "../application/change-admin.use-case"
 
 type UseCases = {
     getOrganizationMembers: IGetOrganizationMembersUseCase,
     kickMember: IKickMemberUseCase
     assignMemberToTeam: IAssignMemberToTeamUseCase
+    changeAdmin: IChangeAdminUseCase
 }
 
 export class MembershipController {
@@ -50,6 +52,19 @@ export class MembershipController {
             const ctx = getContext(req)
 
             const membership = await this.useCases.assignMemberToTeam.execute(membershipId, teamId, ctx)
+
+            res.json({ membership })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    changeAdmin = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body = req.body as ChangeAdminInput
+            const ctx = getContext(req)
+
+            const membership = await this.useCases.changeAdmin.execute(body, ctx)
 
             res.json({ membership })
         } catch (error) {
