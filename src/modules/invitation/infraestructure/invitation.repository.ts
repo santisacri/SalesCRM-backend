@@ -27,8 +27,8 @@ export class InvitationRepository implements IInvitationRepository {
         return this.InvitationDatasource.findByToken(hashedToken)
     }
 
-    findById(id: string, organizationId: string): Promise<InvitationEntity | null> {
-        return this.InvitationDatasource.findById(id, organizationId)
+    findById(id: string): Promise<InvitationEntity | null> {
+        return this.InvitationDatasource.findById(id)
     }
 
     findByEmail(email: string): Promise<InvitationEntity[]> {

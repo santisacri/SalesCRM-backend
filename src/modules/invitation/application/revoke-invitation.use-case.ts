@@ -16,9 +16,9 @@ export class RevokeInvitationUseCase implements IRevokeInvitationUseCase {
     ) { }
 
     async execute(invitationId: string, ctx: OrgScopedCtx): Promise<InvitationEntity> {
-        const invitation = await this.invitationRepo.findById(invitationId, ctx.organizationId)
+        const invitation = await this.invitationRepo.findById(invitationId)
 
-        if (!invitation) throw CustomError.badRequest("Invitation not found");
+        if (!invitation || invitation.organizationId !== ctx.organizationId) throw CustomError.badRequest("Invitation not found");
 
         if (ctx.role !== MembershipRoleEnum.OWNER && invitation.invitedById !== ctx.userId) {
             throw CustomError.forbidden("You can't revoke this invitation", ErrorCode.FORBIDDEN)
