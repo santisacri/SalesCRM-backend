@@ -1,4 +1,4 @@
-import { IContactDatasource } from "../domain/contact.datasource.contract";
+import { IContactDatasource, IContactWithOwner } from "../domain/contact.datasource.contract";
 import { ContactEntity } from "../domain/contact.entity";
 import { IContactRepository } from "../domain/contact.repository.contract";
 import { CreateContactInput, UpdateContactInput } from "../presentation/contact.schemas";
@@ -10,7 +10,7 @@ export class ContactRepository implements IContactRepository {
         private readonly contactDatasource: IContactDatasource
     ) { }
 
-    findMany(organizationId: string): Promise<ContactEntity[]> {
+    findMany(organizationId: string): Promise<IContactWithOwner[]> {
         return this.contactDatasource.findMany(organizationId)
     }
 

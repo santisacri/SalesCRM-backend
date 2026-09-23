@@ -1,6 +1,6 @@
 import { Contact, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
-import { IContactDatasource } from "../domain/contact.datasource.contract";
+import { IContactDatasource, IContactWithOwner } from "../domain/contact.datasource.contract";
 import { ContactEntity, ContactSourceEnum } from "../domain/contact.entity";
 import { CreateContactInput, UpdateContactInput } from "../presentation/contact.schemas";
 
@@ -46,13 +46,26 @@ export class ContactDatasource implements IContactDatasource {
         }
     }
 
-    async findMany(organizationId: string): Promise<ContactEntity[]> {
+    async findMany(organizationId: string): Promise<IContactWithOwner[]> {
         try {
             const record = await this.prisma.contact.findMany({
-                where: { organizationId, deletedAt: null }
+                where: { organizationId, deletedAt: null },
+                include: {
+                    owner: {
+                        select: { name: true, email: true }
+                    }
+                }
             })
 
-            return (record.length > 0 ? record.map(this.toEntity) : [])
+            return record.map(contact => {
+                return {
+                    contact: this.toEntity(contact),
+                    owner: {
+                        email: contact.owner.email,
+                        name: contact.owner.name
+                    }
+                }
+            })
         } catch (error) {
             handlePrismaError(error)
         }
