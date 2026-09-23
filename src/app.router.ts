@@ -13,7 +13,7 @@ export class AppRouter {
 
         router.use('/api/auth', AuthRouter.routes)
         router.use('/api/org', OrganizationRouter.routes)
-        router.use('/api/contact', ContactRouter.routes)
+        router.use('/api/contacts', ContactRouter.routes)
         router.use('/api/teams', TeamRouter.routes)
         router.use('/api/invitations', InvitationRouter.routes)
         router.use('/api/memberships', MembershipRouter.routes)
