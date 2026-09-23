@@ -28,6 +28,10 @@ export class KickMemberUseCase implements IKickMemberUseCase {
             throw CustomError.badRequest("You need to make another member the owner in order to left this organization")
         }
 
+        if (membership.role === MembershipRoleEnum.ADMIN) {
+            throw CustomError.badRequest("You can't kick an admin, use the change admin flow first")
+        }
+
         if (membership.teamId && ctx.role === MembershipRoleEnum.ADMIN) {
             const team = await this.teamRepo.getById(membership.teamId, ctx.organizationId)
 
