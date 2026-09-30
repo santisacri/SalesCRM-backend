@@ -5,6 +5,7 @@ import { MembershipEntity, MembershipStatusEnum } from "./membership.entity";
 export interface MembershipWithUser {
     membership: MembershipEntity,
     user: {
+        id: string
         name: string,
         email: string
     }

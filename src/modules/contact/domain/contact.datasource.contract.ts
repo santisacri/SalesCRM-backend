@@ -4,6 +4,7 @@ import { ContactEntity, IContactEntity } from "./contact.entity";
 export interface IContactWithOwner {
     contact: IContactEntity,
     owner: {
+        id: string
         name: string,
         email: string
     }

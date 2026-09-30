@@ -52,7 +52,7 @@ export class ContactDatasource implements IContactDatasource {
                 where: { organizationId, deletedAt: null },
                 include: {
                     owner: {
-                        select: { name: true, email: true }
+                        select: { name: true, email: true, id: true }
                     }
                 }
             })
@@ -61,6 +61,7 @@ export class ContactDatasource implements IContactDatasource {
                 return {
                     contact: this.toEntity(contact),
                     owner: {
+                        id: contact.owner.id,
                         email: contact.owner.email,
                         name: contact.owner.name
                     }

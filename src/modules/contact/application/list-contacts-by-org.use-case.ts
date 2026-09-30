@@ -1,8 +1,8 @@
-import { ContactEntity } from "../domain/contact.entity";
+import { IContactWithOwner } from "../domain/contact.datasource.contract";
 import { IContactRepository } from "../domain/contact.repository.contract";
 
 export interface IListContactsByOrgUseCase {
-    execute(organizationId: string): Promise<ContactEntity[]>
+    execute(organizationId: string): Promise<IContactWithOwner[]>
 }
 
 export class ListContactsByOrgUseCase implements IListContactsByOrgUseCase {
@@ -11,7 +11,7 @@ export class ListContactsByOrgUseCase implements IListContactsByOrgUseCase {
         private readonly contactRepo: IContactRepository
     ) { }
 
-    async execute(organizationId: string): Promise<ContactEntity[]> {
+    async execute(organizationId: string): Promise<IContactWithOwner[]> {
         return this.contactRepo.findMany(organizationId)
     }
 

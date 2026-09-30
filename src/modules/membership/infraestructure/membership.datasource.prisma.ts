@@ -65,7 +65,7 @@ export class MembershipDatasource implements IMembershipDatasource {
             const memberships = await this.prisma.membership.findMany({
                 where: { organizationId, status },
                 include: {
-                    user: { select: { name: true, email: true } }
+                    user: { select: { name: true, email: true, id: true } }
                 },
                 orderBy: { createdAt: "desc" }
             })
@@ -74,6 +74,7 @@ export class MembershipDatasource implements IMembershipDatasource {
                 return {
                     membership: this.toEntity(membership),
                     user: {
+                        id: membership.user.id,
                         name: membership.user.name,
                         email: membership.user.email
                     }
@@ -89,7 +90,7 @@ export class MembershipDatasource implements IMembershipDatasource {
             const memberships = await this.prisma.membership.findMany({
                 where: { organizationId, teamId, status: "ACTIVE" },
                 include: {
-                    user: { select: { name: true, email: true } }
+                    user: { select: { name: true, email: true, id: true } }
                 },
                 orderBy: { createdAt: "desc" }
             })
@@ -98,6 +99,7 @@ export class MembershipDatasource implements IMembershipDatasource {
                 return {
                     membership: this.toEntity(membership),
                     user: {
+                        id: membership.user.id,
                         name: membership.user.name,
                         email: membership.user.email
                     }

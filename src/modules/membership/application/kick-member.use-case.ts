@@ -1,7 +1,6 @@
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { OrgScopedCtx } from "../../../shared/types/context.types";
 import { IRefreshTokenRepository } from "../../auth/domain/refresh-token.repository.contract";
-import { TeamEntity } from "../../team/domain/team.entity";
 import { ITeamRepository } from "../../team/domain/team.repository.contract";
 import { MembershipEntity, MembershipRoleEnum, MembershipStatusEnum } from "../domain/membership.entity";
 import { IMembershipRepository } from "../domain/membership.repository.contract";

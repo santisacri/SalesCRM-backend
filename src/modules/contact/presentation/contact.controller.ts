@@ -26,12 +26,9 @@ export class ConctactController {
     createContact = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const input = req.body as CreateContactInput
+            const context = getContext(req)
 
-            const contact = await this.useCases.createContact.execute(input, {
-                organizationId: req.user.organizationId!,
-                role: req.user.role!,
-                userId: req.user.entity.id
-            })
+            const contact = await this.useCases.createContact.execute(input, context)
 
             res.status(201).json({ contact })
         } catch (error) {
