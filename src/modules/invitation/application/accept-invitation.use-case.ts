@@ -2,7 +2,7 @@ import { ITransactionManager } from "../../../shared/database/transaction-manage
 import { CustomError } from "../../../shared/errors/custom-errors";
 import { ErrorCode } from "../../../shared/errors/error-codes";
 import { IHashService } from "../../../shared/services/hash.service";
-import { MembershipEntity } from "../../membership/domain/membership.entity";
+import { MembershipEntity, MembershipStatusEnum } from "../../membership/domain/membership.entity";
 import { IMembershipRepository } from "../../membership/domain/membership.repository.contract";
 import { IUserRepository } from "../../user/domain/user.repository.contract";
 import { InvitationEntity, InvitationStatusEnum } from "../domain/invitation.entity";
@@ -41,6 +41,7 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
         return this.tx.run(async (tx) => {
 
             let userId: string
+            let currentMembership: MembershipEntity
 
             if (!existingUser && registrationData) {
                 const hashedPassword = this.hashService.hash(registrationData.password)
@@ -55,17 +56,30 @@ export class AcceptInvitationUseCase implements IAcceptInvitationUseCase {
                 userId = existingUser?.id!
             }
 
-            const membership = await this.membershipRepo.create({
-                role: invitation.role,
-                userId
-            }, invitation.organizationId, tx)
+            const oldMembership = (await this.membershipRepo.findManyByUserId(userId, MembershipStatusEnum.SUSPENDED))
+                .filter(({ organizationId }) => organizationId === invitation.organizationId)
+            [0];
+
+            if (oldMembership) {
+                currentMembership = await this.membershipRepo.update({
+                    ...oldMembership,
+                    role: invitation.role,
+                    userId,
+                    status: MembershipStatusEnum.ACTIVE
+                }, tx)
+            } else {
+                currentMembership = await this.membershipRepo.create({
+                    role: invitation.role,
+                    userId
+                }, invitation.organizationId, tx)
+            }
 
             await this.invitationRepo.update(InvitationEntity.fromObject({
                 ...invitation,
                 status: InvitationStatusEnum.ACCEPTED
             }), tx)
 
-            return membership
+            return currentMembership
         })
 
     }
