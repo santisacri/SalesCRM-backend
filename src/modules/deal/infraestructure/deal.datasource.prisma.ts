@@ -1,6 +1,6 @@
 import { Deal, PrismaClient } from "../../../generated/prisma/client";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
-import { IDealDatasource } from "../domain/deal.datasource.contract";
+import { DealsByStage, IDealDatasource } from "../domain/deal.datasource.contract";
 import { DealEntity, DealStageEnum } from "../domain/deal.entity";
 import { CreateDealInput } from "../presentation/deal.schemas";
 
@@ -20,41 +20,69 @@ export class DealDatasource implements IDealDatasource {
     }
 
     async createDeal(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
-        const deal = await this.prisma.deal.create({
-            data: {
-                ...data,
-                organizationId
-            }
-        })
+        try {
+            const deal = await this.prisma.deal.create({
+                data: {
+                    ...data,
+                    organizationId
+                }
+            })
 
-        return this.toEntity(deal)
+            return this.toEntity(deal)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+
     }
 
     async findDealById(dealId: string, organizationId: string): Promise<DealEntity | null> {
-        const deal = await this.prisma.deal.findUnique({
-            where: { id: dealId, organizationId }
-        })
+        try {
+            const deal = await this.prisma.deal.findUnique({
+                where: { id: dealId, organizationId }
+            })
 
-        if (!deal) return null;
+            if (!deal) return null;
 
-        return this.toEntity(deal)
+            return this.toEntity(deal)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+
     }
 
-    async listDealsByStage(stage: DealStageEnum, organizationId: string, teamId: string): Promise<DealEntity[]> {
-        const deals = await this.prisma.deal.findMany({
-            where: { stage, organizationId, teamId }
-        })
+    async listDealsByStage(organizationId: string, teamId: string | null): Promise<DealsByStage> {
+        try {
+            const deals = await this.prisma.deal.findMany({
+                where: {
+                    organizationId,
+                    ...(teamId && { teamId })
+                },
+                orderBy: { createdAt: 'desc' }
+            })
 
-        return deals.map(this.toEntity)
+            const entities = deals.map(this.toEntity)
+
+            return Object.values(DealStageEnum).reduce((acc, stage) => {
+                acc[stage] = entities.filter(deal => deal.stage === stage)
+                return acc
+            }, {} as DealsByStage)
+        } catch (error) {
+            return handlePrismaError(error)
+        }
     }
 
     async updateDeal(deal: DealEntity, organizationId: string): Promise<DealEntity> {
-        const updatedDeal = await this.prisma.deal.update({
-            data: { ...deal },
-            where: { id: deal.id, organizationId }
-        })
+        try {
+            const updatedDeal = await this.prisma.deal.update({
+                data: { ...deal },
+                where: { id: deal.id, organizationId }
+            })
 
-        return this.toEntity(updatedDeal)
+            return this.toEntity(updatedDeal)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+
     }
 
     async updateDealStage(dealId: string, stage: DealStageEnum, organizationId: string): Promise<DealEntity> {
