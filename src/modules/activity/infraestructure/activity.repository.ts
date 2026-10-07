@@ -9,6 +9,10 @@ export class ActivityRepository implements IActivityRepository {
         private readonly activityDatasource: IActivityDatasource
     ) { }
 
+    findManyByDealId(dealId: string, organizationId: string): Promise<ActivityEntity[]> {
+        return this.activityDatasource.findManyByContactId(dealId, organizationId)
+    }
+
     findManyByContactId(contactId: string, organizationId: string): Promise<ActivityEntity[]> {
         return this.activityDatasource.findManyByContactId(contactId, organizationId)
     }

@@ -18,14 +18,23 @@ export class ActivityDatasource implements IActivityDatasource {
         })
     }
 
+    async findManyByDealId(dealId: string, organizationId: string): Promise<ActivityEntity[]> {
+        try {
+            const activities = await this.prisma.activity.findMany({
+                where: { dealId, organizationId }
+            })
+
+            return activities.map(this.toEntity)
+        } catch (error) {
+            handlePrismaError(error)
+        }
+    }
+
     async findManyByContactId(contactId: string, organizationId: string): Promise<ActivityEntity[]> {
         try {
             const activities = await this.prisma.activity.findMany({
                 where: { contactId, organizationId }
             })
-
-            if (activities.length === 0) return []
-
 
             return activities.map(this.toEntity)
         } catch (error) {
