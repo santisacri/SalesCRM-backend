@@ -16,6 +16,7 @@ export class DealRouter {
 
         router.post('/', [authMiddleware, requireOrgMiddleware, requireTeamMiddleware, validateBody(createDealSchema)], dealController.createDeal)
         router.get('/', [authMiddleware, requireOrgMiddleware, requireTeamMiddleware], dealController.listDealsByStage)
+        router.get('/:dealId', [authMiddleware, requireOrgMiddleware, requireTeamMiddleware], dealController.getDealDetail)
 
 
         return router

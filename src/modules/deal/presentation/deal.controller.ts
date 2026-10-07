@@ -3,10 +3,13 @@ import { CreateDealInput } from "./deal.schemas"
 import getContext from "../../../shared/helpers/get-context"
 import { ICreateDealUseCase } from "../application/create-deal.use-case"
 import { IListDealsByStageUseCase } from "../application/list-deals-by-stage.use-case"
+import { IGetDealDetail } from "../application/get-deal-detail.use-case"
+import { CustomError } from "../../../shared/errors/custom-errors"
 
 type UseCases = {
-    createDeal: ICreateDealUseCase,
+    createDeal: ICreateDealUseCase
     listDealsByStage: IListDealsByStageUseCase
+    getDealDetail: IGetDealDetail
 }
 
 export class DealController {
@@ -36,6 +39,21 @@ export class DealController {
             const deals = await this.useCases.listDealsByStage.execute(context, teamId)
 
             res.json({ ...deals })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getDealDetail = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const dealId = req.params.dealId as string | undefined
+            const context = getContext(req)
+
+            if (!dealId) throw CustomError.badRequest('Missing dealId');
+
+            const { deal, activities } = await this.useCases.getDealDetail.execute(dealId, context)
+
+            res.json({ deal, activities })
         } catch (error) {
             next(error)
         }
