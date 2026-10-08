@@ -18,7 +18,7 @@ export class GetDealDetail implements IGetDealDetail {
     ) { }
 
     async execute(dealId: string, ctx: OrgScopedCtx): Promise<{ deal: DealEntity; activities: ActivityEntity[]; }> {
-        const deal = await this.dealRepo.findDealById(dealId, ctx.organizationId)
+        const deal = await this.dealRepo.findById(dealId, ctx.organizationId)
 
         if (!deal) throw CustomError.notFound("Deal not found");
 

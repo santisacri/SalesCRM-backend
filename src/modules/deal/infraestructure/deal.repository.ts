@@ -1,5 +1,6 @@
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import { DealsByStage, IDealDatasource } from "../domain/deal.datasource.contract";
-import { DealEntity, DealStageEnum } from "../domain/deal.entity";
+import { DealEntity } from "../domain/deal.entity";
 import { IDealRepository } from "../domain/deal.repository.contract";
 import { CreateDealInput } from "../presentation/deal.schemas";
 
@@ -10,24 +11,20 @@ export class DealRepository implements IDealRepository {
     ) { }
 
 
-    createDeal(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
-        return this.dealDatasource.createDeal(data, organizationId)
+    create(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
+        return this.dealDatasource.create(data, organizationId)
     }
 
-    findDealById(dealId: string, organizationId: string): Promise<DealEntity | null> {
-        return this.dealDatasource.findDealById(dealId, organizationId)
+    findById(dealId: string, organizationId: string): Promise<DealEntity | null> {
+        return this.dealDatasource.findById(dealId, organizationId)
     }
 
-    listDealsByStage(organizationId: string, teamId: string): Promise<DealsByStage> {
-        return this.dealDatasource.listDealsByStage(organizationId, teamId)
+    listByStage(organizationId: string, teamId: string): Promise<DealsByStage> {
+        return this.dealDatasource.listByStage(organizationId, teamId)
     }
 
-    updateDeal(deal: DealEntity, organizationId: string): Promise<DealEntity> {
-        return this.dealDatasource.updateDeal(deal, organizationId)
-    }
-
-    updateDealStage(dealId: string, stage: DealStageEnum, organizationId: string): Promise<DealEntity> {
-        return this.dealDatasource.updateDealStage(dealId, stage, organizationId)
+    update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity> {
+        return this.dealDatasource.update(deal, organizationId, tx)
     }
 
     findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]> {

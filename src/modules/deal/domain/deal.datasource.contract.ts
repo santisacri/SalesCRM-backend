@@ -1,13 +1,13 @@
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import { CreateDealInput } from "../presentation/deal.schemas";
 import { DealEntity, DealStageEnum } from "./deal.entity";
 
 export type DealsByStage = Record<DealStageEnum, DealEntity[]>
 
 export interface IDealDatasource {
-    createDeal(data: CreateDealInput, organizationId: string): Promise<DealEntity>
-    findDealById(dealId: string, organizationId: string): Promise<DealEntity | null>
-    listDealsByStage(organizationId: string, teamId?: string): Promise<DealsByStage>
-    updateDeal(deal: DealEntity, organizationId: string): Promise<DealEntity>
-    updateDealStage(dealId: string, stage: DealStageEnum, organizationId: string): Promise<DealEntity>
+    create(data: CreateDealInput, organizationId: string): Promise<DealEntity>
+    findById(dealId: string, organizationId: string): Promise<DealEntity | null>
+    listByStage(organizationId: string, teamId: string | null): Promise<DealsByStage>
+    update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity>
     findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]>
 }

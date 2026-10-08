@@ -24,7 +24,7 @@ export class CreateDealUseCase implements ICreateDealUseCase {
             throw CustomError.forbidden("You can't assign deals to other members")
         }
 
-        return this.dealRepo.createDeal(data, ctx.organizationId)
+        return this.dealRepo.create(data, ctx.organizationId)
     }
 
 }

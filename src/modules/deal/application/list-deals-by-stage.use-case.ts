@@ -16,7 +16,7 @@ export class ListDealsByStageUseCase implements IListDealsByStageUseCase {
 
     async execute(ctx: OrgScopedCtx, teamId?: string): Promise<DealsByStage> {
         const resolvedTeamId = this.resolveTeamScope(teamId, ctx)
-        return this.dealRepo.listDealsByStage(ctx.organizationId, resolvedTeamId)
+        return this.dealRepo.listByStage(ctx.organizationId, resolvedTeamId)
     }
 
     private resolveTeamScope(requestedTeamId: string | undefined, ctx: OrgScopedCtx): string | null {

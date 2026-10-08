@@ -1,4 +1,5 @@
 import { Deal, PrismaClient } from "../../../generated/prisma/client";
+import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
 import { DealsByStage, IDealDatasource } from "../domain/deal.datasource.contract";
 import { DealEntity, DealStageEnum } from "../domain/deal.entity";
@@ -19,7 +20,7 @@ export class DealDatasource implements IDealDatasource {
         })
     }
 
-    async createDeal(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
+    async create(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
         try {
             const deal = await this.prisma.deal.create({
                 data: {
@@ -35,7 +36,7 @@ export class DealDatasource implements IDealDatasource {
 
     }
 
-    async findDealById(dealId: string, organizationId: string): Promise<DealEntity | null> {
+    async findById(dealId: string, organizationId: string): Promise<DealEntity | null> {
         try {
             const deal = await this.prisma.deal.findUnique({
                 where: { id: dealId, organizationId }
@@ -50,7 +51,7 @@ export class DealDatasource implements IDealDatasource {
 
     }
 
-    async listDealsByStage(organizationId: string, teamId: string | null): Promise<DealsByStage> {
+    async listByStage(organizationId: string, teamId: string | null): Promise<DealsByStage> {
         try {
             const deals = await this.prisma.deal.findMany({
                 where: {
@@ -71,11 +72,14 @@ export class DealDatasource implements IDealDatasource {
         }
     }
 
-    async updateDeal(deal: DealEntity, organizationId: string): Promise<DealEntity> {
+    async update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity> {
         try {
-            const updatedDeal = await this.prisma.deal.update({
-                data: { ...deal },
-                where: { id: deal.id, organizationId }
+            const client = tx ?? this.prisma
+            const { updatedAt, id, createdAt, stage, ...data } = deal
+
+            const updatedDeal = await client.deal.update({
+                data: { ...data },
+                where: { id, organizationId }
             })
 
             return this.toEntity(updatedDeal)
@@ -83,10 +87,6 @@ export class DealDatasource implements IDealDatasource {
             handlePrismaError(error)
         }
 
-    }
-
-    async updateDealStage(dealId: string, stage: DealStageEnum, organizationId: string): Promise<DealEntity> {
-        throw new Error("Method not implemented.");
     }
 
     async findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]> {
