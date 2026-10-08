@@ -56,7 +56,7 @@ export class UpdateDealUseCase implements IUpdateDealUseCase {
             expectedCloseDate: data.expectedCloseDate !== undefined ? data.expectedCloseDate : deal.expectedCloseDate
         })
 
-        return this.dealRepo.update(updatedDeal, ctx.organizationId)
+        return this.dealRepo.update(updatedDeal)
     }
 }
 
