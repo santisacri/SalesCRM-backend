@@ -72,10 +72,10 @@ export class DealDatasource implements IDealDatasource {
         }
     }
 
-    async update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity> {
+    async update(deal: DealEntity, tx?: PrismaTransactionClient): Promise<DealEntity> {
         try {
             const client = tx ?? this.prisma
-            const { updatedAt, id, createdAt, stage, ...data } = deal
+            const { updatedAt, id, createdAt, organizationId, ...data } = deal
 
             const updatedDeal = await client.deal.update({
                 data: { ...data },

@@ -7,6 +7,6 @@ export interface IDealRepository {
     create(data: CreateDealInput, organizationId: string): Promise<DealEntity>
     findById(dealId: string, organizationId: string): Promise<DealEntity | null>
     listByStage(organizationId: string, teamId: string | null): Promise<DealsByStage>
-    update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity>
+    update(deal: DealEntity, tx?: PrismaTransactionClient): Promise<DealEntity>
     findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]>
 }

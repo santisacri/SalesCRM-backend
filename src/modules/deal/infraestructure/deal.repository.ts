@@ -23,8 +23,8 @@ export class DealRepository implements IDealRepository {
         return this.dealDatasource.listByStage(organizationId, teamId)
     }
 
-    update(deal: DealEntity, organizationId: string, tx?: PrismaTransactionClient): Promise<DealEntity> {
-        return this.dealDatasource.update(deal, organizationId, tx)
+    update(deal: DealEntity, tx?: PrismaTransactionClient): Promise<DealEntity> {
+        return this.dealDatasource.update(deal, tx)
     }
 
     findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]> {
