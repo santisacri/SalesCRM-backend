@@ -26,3 +26,9 @@ export const updateDealSchema = z.object({
 )
 
 export type UpdateDealInput = z.infer<typeof updateDealSchema>
+
+export const updateDealStageSchema = z.object({
+    newStage: z.enum(DealStageEnum)
+})
+
+export type UpdateDealStageInput = z.infer<typeof updateDealStageSchema>
