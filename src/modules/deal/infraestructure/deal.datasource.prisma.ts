@@ -15,7 +15,7 @@ export class DealDatasource implements IDealDatasource {
     private toEntity(record: Deal) {
         return DealEntity.fromObject({
             ...record,
-            amount: record.amount as unknown as number,
+            amount: record.amount.toNumber(),
             stage: record.stage as DealStageEnum
         })
     }
