@@ -1,5 +1,5 @@
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
-import { DealsByStage, IDealDatasource } from "../domain/deal.datasource.contract";
+import { DealsByStage, IDealDatasource, StageStats } from "../domain/deal.datasource.contract";
 import { DealEntity } from "../domain/deal.entity";
 import { IDealRepository } from "../domain/deal.repository.contract";
 import { CreateDealInput } from "../presentation/deal.schemas";
@@ -9,7 +9,6 @@ export class DealRepository implements IDealRepository {
     constructor(
         private readonly dealDatasource: IDealDatasource
     ) { }
-
 
     create(data: CreateDealInput, organizationId: string): Promise<DealEntity> {
         return this.dealDatasource.create(data, organizationId)
@@ -29,6 +28,13 @@ export class DealRepository implements IDealRepository {
 
     findManyByContactId(contactId: string, organizationId: string): Promise<DealEntity[]> {
         return this.dealDatasource.findManyByContactId(contactId, organizationId)
+    }
+
+    statsByStage(organizationId: string, teamScope: string | null, closedSince: Date): Promise<StageStats[]> {
+        return this.dealDatasource.statsByStage(organizationId, teamScope, closedSince)
+    }
+    wonSince(organizationId: string, teamScope: string | null, since: Date): Promise<{ count: number; amount: number; }> {
+        return this.dealDatasource.wonSince(organizationId, teamScope, since)
     }
 
 }

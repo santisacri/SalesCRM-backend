@@ -1,7 +1,7 @@
-import { Deal, PrismaClient } from "../../../generated/prisma/client";
+import { Deal, DealStage, PrismaClient } from "../../../generated/prisma/client";
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import handlePrismaError from "../../../shared/errors/prisma-errors";
-import { DealsByStage, IDealDatasource } from "../domain/deal.datasource.contract";
+import { DealsByStage, IDealDatasource, StageStats } from "../domain/deal.datasource.contract";
 import { DealEntity, DealStageEnum } from "../domain/deal.entity";
 import { CreateDealInput } from "../presentation/deal.schemas";
 
@@ -100,6 +100,54 @@ export class DealDatasource implements IDealDatasource {
             return deal.map(this.toEntity)
         } catch (error) {
             handlePrismaError(error)
+        }
+    }
+
+    async statsByStage(organizationId: string, teamScope: string | null, closedSince: Date): Promise<StageStats[]> {
+        try {
+            const rows = await this.prisma.deal.groupBy({
+                by: ['stage'],
+                where: {
+                    organizationId,
+                    ...(teamScope && { teamId: teamScope }),
+                    OR: [
+                        { stage: { notIn: [DealStage.WON, DealStage.LOST] } },
+                        { closedAt: { gte: closedSince } },
+                    ],
+                },
+                _count: { id: true },
+                _sum: { amount: true },
+            })
+
+            return rows.map(row => ({
+                stage: row.stage as DealStageEnum,
+                count: row._count.id,
+                amount: Number(row._sum.amount ?? 0),
+            }))
+        } catch (error) {
+            return handlePrismaError(error)
+        }
+    }
+
+    async wonSince(organizationId: string, teamScope: string | null, since: Date): Promise<{ count: number; amount: number; }> {
+        try {
+            const result = await this.prisma.deal.aggregate({
+                where: {
+                    organizationId,
+                    ...(teamScope && { teamId: teamScope }),
+                    stage: DealStage.WON,
+                    closedAt: { gte: since },
+                },
+                _count: { id: true },
+                _sum: { amount: true },
+            })
+
+            return {
+                count: result._count.id,
+                amount: Number(result._sum.amount ?? 0),
+            }
+        } catch (error) {
+            return handlePrismaError(error)
         }
     }
 
