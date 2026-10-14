@@ -1,5 +1,6 @@
 import { PrismaTransactionClient } from "../../../shared/database/transaction-manager";
 import { DealStageEnum } from "../../deal/domain/deal.entity";
+import { ListActivitiesQuery } from "../presentation/activity.schemas";
 import { ActivityEntity, ActivityTypeEnum } from "./activity.entity";
 
 type BaseActivityInput = {
@@ -7,6 +8,11 @@ type BaseActivityInput = {
     contactId: string
     dealId: string | null
     createdById: string
+}
+
+export type ActivityPage = {
+    activities: ActivityEntity[]
+    nextCursor: string | null
 }
 
 export type CreateActivityInput =
@@ -21,6 +27,6 @@ export type CreateActivityInput =
 
 export interface IActivityDatasource {
     create(data: CreateActivityInput, tx?: PrismaTransactionClient): Promise<ActivityEntity>
-    findManyByContactId(contactId: string, organizationId: string): Promise<ActivityEntity[]>
+    listByContactId(contactId: string, organizationId: string, teamId: string | null,{ cursor, limit, from, to }: ListActivitiesQuery): Promise<ActivityPage>
     findManyByDealId(dealId: string, organizationId: string): Promise<ActivityEntity[]>
 }

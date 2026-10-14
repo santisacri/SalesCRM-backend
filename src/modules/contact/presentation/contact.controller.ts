@@ -39,10 +39,11 @@ export class ConctactController {
     getContactById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const contactId = req.params.contactId as string
+            const context = getContext(req)
 
             if (!contactId) throw CustomError.badRequest('Missing contactId', ErrorCode.BAD_REQUEST)
 
-            const result = await this.useCases.getContactById.execute(contactId, req.user.organizationId!)
+            const result = await this.useCases.getContactById.execute(contactId, context)
 
             const contactDetail = contactDetailSchema.parse(result)
 

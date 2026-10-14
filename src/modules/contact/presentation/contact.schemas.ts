@@ -57,7 +57,8 @@ export const contactDetailSchema = z.object({
             content: z.unknown(),
             createdAt: z.date()
         })
-    )
+    ),
+    hasMoreActivities: z.boolean()
 })
 
 export type ContactDetailOutput = z.infer<typeof contactDetailSchema>

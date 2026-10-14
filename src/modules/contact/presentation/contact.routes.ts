@@ -4,6 +4,7 @@ import { authMiddleware } from "../../../shared/container/auth.container";
 import validateBody from "../../../shared/middlewares/validate-body.middleware";
 import { createContactSchema, updateContactSchema } from "./contact.schemas";
 import requireOrgMiddleware from "../../../shared/middlewares/require-org.middleware";
+import requireTeamMiddleware from "../../../shared/middlewares/require-team.middleware";
 
 
 export class ContactRouter {
@@ -12,7 +13,7 @@ export class ContactRouter {
         const router = Router()
 
         router.post('/', [authMiddleware, validateBody(createContactSchema)], conctactController.createContact)
-        router.get('/:contactId', [authMiddleware, requireOrgMiddleware], conctactController.getContactById)
+        router.get('/:contactId', [authMiddleware, requireOrgMiddleware, requireTeamMiddleware], conctactController.getContactById)
         router.get('/', [authMiddleware, requireOrgMiddleware], conctactController.listContactsByOrg)
         router.put('/:contactId', [authMiddleware, requireOrgMiddleware, validateBody(updateContactSchema)], conctactController.updateContact)
         router.delete('/:contactId', [authMiddleware, requireOrgMiddleware], conctactController.deleteContact)
