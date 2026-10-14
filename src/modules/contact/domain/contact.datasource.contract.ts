@@ -16,4 +16,5 @@ export interface IContactDatasource {
     findMany(organizationId: string): Promise<IContactWithOwner[]>
     deleteById(contactId: string, organizationId: string): Promise<void>
     update(data: UpdateContactInput, contactId: string, organizationId: string): Promise<ContactEntity>
+    countCreatedSince(organizationId: string, ownerId: string | null, since: Date): Promise<number>
 }

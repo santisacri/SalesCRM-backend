@@ -30,4 +30,8 @@ export class ContactRepository implements IContactRepository {
         return this.contactDatasource.create(data, organizationId)
     }
 
+    countCreatedSince(organizationId: string, ownerId: string | null, since: Date): Promise<number> {
+        return this.contactDatasource.countCreatedSince(organizationId, ownerId, since)
+    }
+
 }

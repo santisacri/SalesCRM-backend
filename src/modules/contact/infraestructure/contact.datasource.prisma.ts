@@ -97,4 +97,19 @@ export class ContactDatasource implements IContactDatasource {
         }
     }
 
+    async countCreatedSince(organizationId: string, ownerId: string | null, since: Date): Promise<number> {
+        try {
+            return await this.prisma.contact.count({
+                where: {
+                    organizationId,
+                    deletedAt: null,
+                    createdAt: { gte: since },
+                    ...(ownerId && { ownerId }),
+                },
+            })
+        } catch (error) {
+            return handlePrismaError(error)
+        }
+    }
+
 }   
