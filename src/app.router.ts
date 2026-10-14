@@ -7,6 +7,7 @@ import { InvitationRouter } from "./modules/invitation/presentation/invitation.r
 import { MembershipRouter } from "./modules/membership/presentation/membership.routes";
 import { DealRouter } from "./modules/deal/presentation/deal.routes";
 import { ActivityRouter } from "./modules/activity/presentation/activity.routes";
+import { DashboardRouter } from "./modules/dashboard/presentation/dashboard.routes";
 
 
 export class AppRouter {
@@ -21,6 +22,7 @@ export class AppRouter {
         router.use('/api/memberships', MembershipRouter.routes)
         router.use('/api/deals', DealRouter.routes)
         router.use('/api/activity', ActivityRouter.routes)
+        router.use('/api/dashboard', DashboardRouter.routes)
 
         return router
     }
