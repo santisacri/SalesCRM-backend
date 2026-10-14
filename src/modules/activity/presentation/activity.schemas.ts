@@ -8,3 +8,15 @@ export const createNoteSchema = z.object({
 })
 
 export type CreateNoteInput = z.infer<typeof createNoteSchema>
+
+export const listActivitiesQuerySchema = z.object({
+    cursor: z.uuidv7().optional(),
+    limit: z.coerce.number().int().min(1).max(50).default(20),
+    from: z.coerce.date().optional(),
+    to: z.coerce.date().optional(),
+}).refine(
+    (q) => !q.from || !q.to || q.from <= q.to,
+    { error: '"from" must be before "to"', path: ['from'] }
+)
+
+export type ListActivitiesQuery = z.infer<typeof listActivitiesQuerySchema>
