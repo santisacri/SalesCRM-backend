@@ -7,7 +7,7 @@ export default function requireTeamMiddleware(req: Request, _res: Response, next
 
     const { teamId, role } = req.user
 
-    if (role !== MembershipRoleEnum.OWNER && !teamId) throw CustomError.forbidden('You need to belong to a team in order to proceed', ErrorCode.ORGANIZATION_NOT_SELECTED);
+    if (role !== MembershipRoleEnum.OWNER && !teamId) throw CustomError.forbidden('You need to belong to a team in order to proceed', ErrorCode.TEAM_NOT_ASSIGNED);
 
 
     next()
