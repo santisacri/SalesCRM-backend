@@ -23,6 +23,10 @@ export class AssignMemberToTeamUseCase implements IAssignMemberToTeamUseCase {
 
         if (!membership) throw CustomError.notFound('Member not found');
 
+        if (membership.teamId !== null) throw CustomError.badRequest("This member already belongs to a team");
+
+        if (membership.role === MembershipRoleEnum.OWNER) throw CustomError.badRequest();
+
         if (membership.role === MembershipRoleEnum.ADMIN) {
             throw CustomError.badRequest('Cannot reassign an admin directly, use the change-admin flow first')
         }
