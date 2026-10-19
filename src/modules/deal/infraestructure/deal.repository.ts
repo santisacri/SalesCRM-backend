@@ -30,11 +30,11 @@ export class DealRepository implements IDealRepository {
         return this.dealDatasource.findManyByContactId(contactId, organizationId)
     }
 
-    statsByStage(organizationId: string, teamScope: string | null, closedSince: Date): Promise<StageStats[]> {
-        return this.dealDatasource.statsByStage(organizationId, teamScope, closedSince)
+    statsByStage(organizationId: string, teamScope: string | null, ownerId: string | null, closedSince: Date): Promise<StageStats[]> {
+        return this.dealDatasource.statsByStage(organizationId, teamScope, ownerId, closedSince)
     }
-    wonSince(organizationId: string, teamScope: string | null, since: Date): Promise<{ count: number; amount: number; }> {
-        return this.dealDatasource.wonSince(organizationId, teamScope, since)
+    wonSince(organizationId: string, teamScope: string | null, ownerId: string | null, since: Date): Promise<{ count: number; amount: number; }> {
+        return this.dealDatasource.wonSince(organizationId, teamScope, ownerId, since)
     }
 
 }

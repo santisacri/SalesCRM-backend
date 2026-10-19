@@ -103,13 +103,14 @@ export class DealDatasource implements IDealDatasource {
         }
     }
 
-    async statsByStage(organizationId: string, teamScope: string | null, closedSince: Date): Promise<StageStats[]> {
+    async statsByStage(organizationId: string, teamScope: string | null, ownerId: string | null, closedSince: Date): Promise<StageStats[]> {
         try {
             const rows = await this.prisma.deal.groupBy({
                 by: ['stage'],
                 where: {
                     organizationId,
                     ...(teamScope && { teamId: teamScope }),
+                    ...(ownerId && { ownerId: ownerId }),
                     OR: [
                         { stage: { notIn: [DealStage.WON, DealStage.LOST] } },
                         { closedAt: { gte: closedSince } },
@@ -129,12 +130,13 @@ export class DealDatasource implements IDealDatasource {
         }
     }
 
-    async wonSince(organizationId: string, teamScope: string | null, since: Date): Promise<{ count: number; amount: number; }> {
+    async wonSince(organizationId: string, teamScope: string | null, ownerId: string | null, since: Date): Promise<{ count: number; amount: number; }> {
         try {
             const result = await this.prisma.deal.aggregate({
                 where: {
                     organizationId,
                     ...(teamScope && { teamId: teamScope }),
+                    ...(ownerId && { ownerId: ownerId }),
                     stage: DealStage.WON,
                     closedAt: { gte: since },
                 },

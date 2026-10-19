@@ -31,12 +31,12 @@ export class GetDashboardSummaryUseCase implements IGetDashboardSummaryUseCase {
 
     async execute(input: { teamId?: string }, ctx: OrgScopedCtx): Promise<DashboardSummary> {
         const teamScope = resolveTeamScope(input.teamId, ctx)
-        const contactOwnerScope = ctx.role === MembershipRoleEnum.MEMBER ? ctx.userId : null
+        const ownerScope = ctx.role === MembershipRoleEnum.MEMBER ? ctx.userId : null
 
         const [rows, wonThisMonth, newContacts] = await Promise.all([
-            this.dealRepo.statsByStage(ctx.organizationId, teamScope, daysAgo(CLOSED_WINDOW_DAYS)),
-            this.dealRepo.wonSince(ctx.organizationId, teamScope, startOfMonthAR()),
-            this.contactRepo.countCreatedSince(ctx.organizationId, contactOwnerScope, startOfMonthAR()),
+            this.dealRepo.statsByStage(ctx.organizationId, teamScope, ownerScope, daysAgo(CLOSED_WINDOW_DAYS)),
+            this.dealRepo.wonSince(ctx.organizationId, teamScope, ownerScope, startOfMonthAR()),
+            this.contactRepo.countCreatedSince(ctx.organizationId, ownerScope, startOfMonthAR()),
         ])
 
         const byStage = new Map(rows.map(r => [r.stage, r]))
