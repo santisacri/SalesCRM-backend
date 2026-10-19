@@ -19,3 +19,5 @@ export const changeAdminSchema = z.object({
 })
 
 export type ChangeAdminInput = z.infer<typeof changeAdminSchema>
+
+export const uuidQueryParamSchema = z.uuidv7()

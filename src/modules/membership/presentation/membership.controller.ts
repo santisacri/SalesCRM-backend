@@ -1,16 +1,19 @@
 import { NextFunction, Request, Response } from "express"
 import { IGetOrganizationMembersUseCase } from "../application/get-organization-members.use-case"
 import getContext from "../../../shared/helpers/get-context"
-import { ChangeAdminInput, StatusQueryParamSchema } from "./membership.schemas"
+import { ChangeAdminInput, StatusQueryParamSchema, uuidQueryParamSchema } from "./membership.schemas"
 import { IKickMemberUseCase } from "../application/kick-member.use-case"
 import { IAssignMemberToTeamUseCase } from "../application/assign-member-to-team.use-case"
 import { IChangeAdminUseCase } from "../application/change-admin.use-case"
+import { IExpulseFromTeamUseCase } from "../application/expulse-from-team.use-case"
+import { CustomError } from "../../../shared/errors/custom-errors"
 
 type UseCases = {
     getOrganizationMembers: IGetOrganizationMembersUseCase,
     kickMember: IKickMemberUseCase
     assignMemberToTeam: IAssignMemberToTeamUseCase
     changeAdmin: IChangeAdminUseCase
+    expulseFromTeam: IExpulseFromTeamUseCase
 }
 
 export class MembershipController {
@@ -34,12 +37,29 @@ export class MembershipController {
 
     kickMember = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const memberId = req.params.memberId as string
+            const userId = req.params.userId as string
             const context = getContext(req)
 
-            const suspendedMembership = await this.useCases.kickMember.execute(memberId, context)
+            const suspendedMembership = await this.useCases.kickMember.execute(userId, context)
 
             res.json({ suspendedMembership })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    expulseFromTeam = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const membershipId = req.params.membershipId as string
+
+            const { success } = uuidQueryParamSchema.safeParse(membershipId)
+            if (!success) throw CustomError.badRequest('Invalid membershipId');
+
+            const context = getContext(req)
+
+            const membership = await this.useCases.expulseFromTeam.execute(membershipId, context)
+
+            res.json({ membership })
         } catch (error) {
             next(error)
         }

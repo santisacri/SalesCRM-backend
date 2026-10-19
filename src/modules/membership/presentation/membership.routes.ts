@@ -14,8 +14,9 @@ export class MembershipRouter {
 
         router.get('/', [authMiddleware, requireOrgMiddleware], membershipController.getOrganizationMembers)
         router.patch('/change-admin', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware, validateBody(changeAdminSchema)], membershipController.changeAdmin)
-        router.patch('/:memberId', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.kickMember)
+        router.patch('/:userId', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.kickMember)
         router.patch('/:membershipId/assign-team/:teamId', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.assignMemberToTeam)
+        router.patch('/:membershipId/expulse-from-team', [authMiddleware, requireOrgMiddleware, atLeastAdminMiddleware], membershipController.expulseFromTeam)
 
         return router
     }
