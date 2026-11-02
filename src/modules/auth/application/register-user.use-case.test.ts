@@ -77,8 +77,8 @@ describe('RegisterUserUseCase', () => {
         expect(userRepo.create).toHaveBeenCalledWith({
             name: validInput.name,
             email: validInput.email,
-            password: 'hashed-password-123',
-        });
+            password: 'hashed-password-123'
+        }, false);
     })
 
     it('should never pass the plain-text password to create', async () => {
